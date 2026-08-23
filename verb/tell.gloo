@@ -1,0 +1,31 @@
+# 
+# Tell verb.
+# Send a message to an object.
+# 
+tell [container] :
+
+  # 
+  # Send a messages to objects.
+  # Available messages depend on the type of object.
+  # 
+  on_load [script] :
+    tell tell.code to run
+
+    tell tell.str to up
+    show tell.str
+
+    put 'LOWER CASE' into tell.str
+    tell tell.str to down
+    show tell.str
+
+    tell tell.i to inc
+    show tell.i
+
+  i [integer] : 42
+  str [string] : upper case
+
+  # 
+  # Scripts can be run.
+  # 
+  code [script] :
+    show "Code was run!"

@@ -1,0 +1,22 @@
+# 
+# Run verb.
+# Execute a script.
+# 
+run [container] :
+
+  # 
+  # Run a script when the program loads.
+  # 
+  on_load [script] :
+    run run.another
+
+    # 
+    # Same as telling the script to run
+    # 
+    tell run.another to run
+
+  # 
+  # Another script to run
+  # 
+  another [script] :
+    show "Another script was run!"

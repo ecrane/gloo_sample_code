@@ -4,6 +4,9 @@
 # This program prints "Hello World!" to the console.
 # By Convention, the root object is given the same name as the file it is in.
 # 
+# NOTE that you might also run gloo and type 'show "Hello World!"'
+# in the terminal to get the same result.
+# 
 hello_world [container] : 
 
 	# 

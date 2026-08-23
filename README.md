@@ -32,6 +32,15 @@ Use at your own risk.
 ## Suggested Order
 
  - Start with Verbs
+   - show
+   - put
+   - tell
+   - run
+   - then others as needed
  - Then explore Objects
+   - string
+   - container
+   - script
+   - then others as needed
  - Use lang (language) for gloo concepts and syntax
  - And once you have a sense of how gloo works, explore the more advanced features and core libraries

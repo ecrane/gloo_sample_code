@@ -1,0 +1,19 @@
+# 
+# Show verb.
+# Display a value to the user.
+# 
+show [container] :
+
+  msg [string] : Hello Gloo World!
+
+  # 
+  # Show an object, literal, or the result of an expression.
+  # 
+  on_load [script] :
+    show show.msg
+    show 'Gloo is awesome!'
+    show 3 + 4
+
+    # Show with color
+    show 'This is white text' (white)
+    show 'And this is blue' (blue)

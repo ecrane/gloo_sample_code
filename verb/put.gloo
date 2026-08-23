@@ -1,0 +1,46 @@
+#
+# Put verb.
+# Assign a value to an object.
+#
+put [can] :
+
+  msg1 [string] : Hello World!
+  msg2 [string] : 
+
+  on_load [script] :
+    run put.one_obj_to_another
+    run put.literal_value
+    run put.with_ops
+    run put.with_error
+    show "Done."
+
+
+  # 
+  # Put one object's value into another.
+  # 
+  one_obj_to_another [script] :
+    put put.msg1 into put.msg2
+    show put.msg2
+
+  # 
+  # Put a literal value into an object.
+  # 
+  literal_value [script] :
+    put "One Two Three" into put.msg2
+    show put.msg2
+
+  # 
+  # Put an expression into an object.
+  # Note we're doing math and value conversion.
+  # 
+  with_ops [script] :
+    put 1 + 2 into put.msg2
+    show put.msg2
+
+  # 
+  # Put does not work if the into object does not exist.
+  # Expect an error
+  # 
+  with_error [script] :
+    show "Expect an error:"
+    put put.msg1 into put.msg3
