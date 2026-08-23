@@ -20,3 +20,18 @@ gloo hello_world
 ```
 
 The .gloo extension is optional when using the project_path.
+
+
+## Just Sample Code
+
+The code in this repository is for demonstration purposes only.
+As the gloo language is changing, some of the sample code might be out of date.
+Use at your own risk.
+
+
+## Suggested Order
+
+ - Start with Verbs
+ - Then explore Objects
+ - Use lang (language) for gloo concepts and syntax
+ - And once you have a sense of how gloo works, explore the more advanced features and core libraries
