@@ -1,0 +1,12 @@
+# 
+# The canonical first program.
+# 
+# This program prints "Hello World!" to the console.
+# By Convention, the root object is given the same name as the file it is in.
+# 
+hello_world [container] : 
+
+	# 
+	# Script that is run when the program is loaded.
+	# 
+	on_load [script] : show "Hello World!"
