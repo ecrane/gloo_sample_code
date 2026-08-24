@@ -1,0 +1,15 @@
+#
+# Unload an object
+#
+# Best way to see is this to run gloo, load this file,
+# and then run:
+# 
+# > gloo
+# > load verb/unload
+# > run unload.run
+#
+unload [container] : 
+	run [script] : tell unload to unload
+	msg [string] : Goodbye for now!
+	on_unload [script] : 
+		show unload.msg

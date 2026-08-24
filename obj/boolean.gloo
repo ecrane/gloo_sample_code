@@ -1,0 +1,13 @@
+#
+# Boolean object.
+#
+boolean [can] :
+
+  flag [boolean] : true
+  
+  on_load [script] :
+    show boolean.flag
+    put false into boolean.flag
+    show boolean.flag
+    tell boolean.flag to not
+    show boolean.flag

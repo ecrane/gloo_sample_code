@@ -1,0 +1,13 @@
+#
+# Container (can) object.
+#
+container [can] :
+
+  data [can] :
+    1 : one
+    2 : two
+    3 : three
+
+	on_load [script] :
+    # Show container as key-values in table.
+		tell container.data to show_key_value_table

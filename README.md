@@ -37,10 +37,10 @@ Use at your own risk.
    - tell
    - run
    - then others as needed
- - Then explore Objects
+ - Explore Objects
    - string
    - container
    - script
    - then others as needed
- - Use lang (language) for gloo concepts and syntax
+ - Use lang (gloo language) for gloo concepts and syntax
  - And once you have a sense of how gloo works, explore the more advanced features and core libraries

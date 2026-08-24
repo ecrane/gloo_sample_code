@@ -1,0 +1,39 @@
+#
+# String object.
+#
+string [can] :
+
+  msg [string] : Hello World!
+
+  on_load [script] :
+    show ^.msg
+    tell ^.msg to up
+    show ^.msg
+    tell ^.msg to size
+    show it
+
+    show 'Does it starts with Hello?' (white)
+    check ^.msg for starts_with? ("HELLO")
+    show it
+
+    show 'Does it start with X?' (white)
+    check ^.msg for starts_with? ( "X" )
+    show it
+
+    show 'Does it end with WORLD?' (white)
+    check ^.msg for ends_with? ( "WORLD!" )
+    show it
+
+    show 'Does it end with Z?' (white)
+    check ^.msg for ends_with? ( "Z" )
+    show it
+
+    show 'Does it contain XZY' (white)
+    check ^.msg for substring? ( "XZY" )
+    show it
+
+    show ^.msg
+    tell ^.msg to sub (' ' '_')
+    show ^.msg
+
+    show 'Done.'

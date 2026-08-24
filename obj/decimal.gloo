@@ -1,0 +1,13 @@
+#
+# Decimal object.
+#
+decimal [can] :
+
+  x [decimal] : 100
+  
+  on_load [script] :
+    show decimal.x
+    put decimal.x / 3 into decimal.x
+    show decimal.x
+    tell decimal.x to round (1)
+    show decimal.x

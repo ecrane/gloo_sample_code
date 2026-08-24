@@ -1,0 +1,16 @@
+#
+# Run a script that lists data to the console.
+# 
+list [can] :
+
+  can [can] :
+    a [string] : A
+    b [string] : B
+    c [string] : C
+
+	on_load [script] :
+    show 'listing data in container…'
+    list list.can
+    
+    show 'now showing everything…'
+    list
