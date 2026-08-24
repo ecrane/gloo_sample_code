@@ -1,0 +1,66 @@
+#
+# Alias object.
+#
+# An alias is a pointer to a different object.
+# It is used widely in loops and other structural elements.
+# 
+# If you "put" into an alias, you are putting into the object
+# the alias points to.  If you want to set the value of the alias
+# itself, use the '*' specifier:
+# 
+# > put 'path.to.obj' into alias.object*
+# 
+alias [can] :
+
+  # Vars
+  s [string] : a string
+	i [integer] : 13
+  ln [alias] : alias.s
+
+  # 
+  # Run tests
+  # 
+  on_load [script] :
+    run alias.basic
+    run alias.add
+    run alias.multi_redirect
+
+  # 
+  # Basic tests.
+  # 
+  basic [script] :
+    show 'showing a value through a link:' (white)
+    show alias.ln
+
+    show 'showing the value of the link:' (white)
+    show alias.ln*
+
+    show 'changing what the link points to:' (white)
+    put 'alias.i' into alias.ln*
+    put 7 into alias.ln
+    show alias.ln
+    show alias.ln*
+  
+  # 
+  # Example of creating an object using an alias.
+  # 
+  add [script] :
+    show '----- creating object using alias -----' (white)
+    put 'x' into alias.ln*
+    create alias.ln* as string
+    show 'created object:' (white)
+    list
+    put 'test' into x
+    show alias.ln
+    show x
+
+  # More Vars
+  msg [string] : Redireced through multiple aliases
+	one [alias] : alias.two
+  two [alias] : alias.three
+  three [alias] : alias.msg
+
+  # 
+  # Show a Message through multiple re-directs
+  # 
+  multi_redirect [script] : show alias.one

@@ -1,0 +1,44 @@
+#
+# Random string generation.
+#
+random [can] :
+
+  s [string] :
+  
+  on_load [script] :
+    show
+    show 'UUIDs' (white)
+    tell ^.s to gen_uuid
+    show ^.s
+    tell ^.s to gen_uuid
+    show ^.s
+    tell ^.s to gen_uuid
+    show ^.s
+    show
+
+    show 'Base64 Strings' (white)
+    tell ^.s to gen_base64
+    show ^.s
+    tell ^.s to gen_base64 (4)
+    show ^.s
+    tell ^.s to gen_base64 (30)
+    show ^.s
+    show
+
+    show 'Hex Strings' (white)
+    tell ^.s to gen_hex
+    show ^.s
+    tell ^.s to gen_hex (5)
+    show ^.s
+    tell ^.s to gen_hex (20)
+    show ^.s
+    show
+
+    show 'alphanumeric Strings' (white)
+    tell ^.s to gen_alphanumeric
+    show ^.s
+    tell ^.s to gen_alphanumeric (5)
+    show ^.s
+    tell ^.s to gen_alphanumeric (20)
+    show ^.s
+    show

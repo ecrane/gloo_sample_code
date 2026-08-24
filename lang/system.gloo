@@ -1,0 +1,27 @@
+#
+# Gloo System objects
+#
+# Use either '$' or 'gloo' to reference.
+# Use either '_' or '.' in setting names:
+#   $.gloo_home is the same as gloo.gloo.home
+#
+system [container] :
+
+	on_load [script] :
+		show "  hostname: " + $.hostname (white)
+		show "  user: " + $.user (white)
+		show "  user home: " + $.user_home (white)
+		show "  working dir: " + $.working_dir (white)
+		show "  gloo home: " + $.gloo_home (white)
+		show "  gloo config: " + $.gloo_config (white)
+		show "  gloo projects: " + $.gloo_projects (white)
+		show "  gloo log: " + $.gloo_log (white)
+
+		show ''
+    show "  lines: " + gloo.screen_lines (white)
+    show "  cols: " + $.screen_cols (white)
+    show "  lines: " + $.screen.lines (white)
+    show "  cols: " + $.screen.cols (white)
+
+		show ''
+		show "line…" + $.line + "  divider"
