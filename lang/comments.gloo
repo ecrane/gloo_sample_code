@@ -1,0 +1,16 @@
+#
+# This is a comment.
+# Comments start with the hash/pound character '#'
+#
+comments [can] : 
+
+  # Comment in here as well
+  msg [string] : Comments are allowed!
+
+  on_load [script] : show comments.msg
+
+# 
+# Blank lines are allowed, but just used for clarity.
+# 
+# Comments, by convention come before the thing they describe.
+# 

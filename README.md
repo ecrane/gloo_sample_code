@@ -38,6 +38,7 @@ Use at your own risk.
    - run
    - then others as needed
  - Explore Objects
+   - object
    - string
    - container
    - script

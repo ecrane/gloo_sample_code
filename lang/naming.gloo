@@ -1,0 +1,20 @@
+#
+# Example of object naming.
+#
+# NOTE that the second 'a' and the 'A' objects are not reachable.
+# 'naming.a' will always reach the 'First A' string.
+#
+naming [container] : 
+
+	on_load [script] : 
+		show naming.msg!$%
+		show naming.a
+		show naming.1
+		show naming.string
+
+	msg!$% [string] : Naming stuff
+	a [string] : First A
+	a [string] : Second A
+	A [string] : Capital
+	1 [string] : One
+	string [string] : A name can be an object type or a verb

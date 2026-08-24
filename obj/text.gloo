@@ -1,0 +1,47 @@
+# 
+# Show a long block of text.
+#
+# NOTE that a text object is essentially identical to a string.
+# The main difference is that by convention text is used for
+# multiple lines, or longer text blocks.
+# 
+text [container] : 
+
+	# 
+	# Use the special BEGIN and END tags for multiline text blocks.
+	# 
+	msg [txt] : BEGIN
+		I will now write a poem
+		of two lines or less
+		END
+		
+	# 
+	# Display the poem
+	# 
+	on_load [script] : 
+		show ^.msg
+
+		# 
+		# Use line continuation to join strings
+		# 
+		put "string one, " \
+			"string two, " \
+			"and string three." \
+			$.line "This is a new line" into ^.t
+		show ^.t
+
+		# 
+		# Run the page_file script, but first set the path 
+		# to a long text file.
+		# 
+		# run ^.page_file
+
+	t [txt] :
+
+	# 
+	# Read a file and display it as paginated text in the terminal.
+	# 
+	f [file] : /path/to/text/file.txt
+	page_file [script] :
+		tell ^.f to read (^.t)
+    tell ^.t to page

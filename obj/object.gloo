@@ -1,0 +1,25 @@
+#
+# Base object checks.
+#
+obj [container] :
+
+	msg [string] : 
+	
+	on_load [script] : 
+		show
+		show 'Does the obj container have children?'
+		check obj for contains?
+		show it
+
+		show
+		show 'Is the msg blank?'
+		check obj.msg for blank?
+		show it
+
+		show
+		put 'Hello, world!' into obj.msg
+		show obj.msg
+		show 'Is the msg still blank?'
+		check obj.msg for blank?
+		show it
+		show
