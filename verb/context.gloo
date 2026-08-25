@@ -1,0 +1,15 @@
+# 
+# Notes about using context
+# 
+context [container] :
+	sub [container] :
+
+		msg [string] : Hello Gloo World!
+    
+		on_load [script] :
+         @ context.sub
+         show @.msg
+         show ^.msg
+         show it
+         @ root
+         show 'Setting the context should mean we can access local objs'

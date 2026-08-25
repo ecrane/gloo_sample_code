@@ -1,0 +1,16 @@
+# 
+# Test that I can load multiple files into the same namespace.
+# 
+# run gloo, then:
+# 	> load lang/multi_files_obj/start
+# 
+start [container] : 
+
+	on_load [script] : 
+		load lang/multi_files_obj/a
+		load lang/multi_files_obj/b
+		load lang/multi_files_obj/c
+		load lang/multi_files_obj/1
+		load lang/multi_files_obj/2
+		load lang/multi_files_obj/3
+		list

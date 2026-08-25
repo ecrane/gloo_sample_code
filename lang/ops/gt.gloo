@@ -1,0 +1,33 @@
+#
+# Test the Greater Than operator.
+# 
+gt [can] :
+
+  on_load [script] :    
+    show '---------- int -------------'
+    show 'is 1 > 2?' (white)
+    show 1 > 2
+    show
+
+    show 'is 1 > 1?' (white)
+    show 1 > 1
+    show
+
+    show 'is 2 > 1?' (white)
+    show 2 > 1
+    show
+
+    show '---------- dec -------------'
+    show 'is 1.0 > 1.1?' (white)
+    show 1.0 > 1.1
+    show
+
+    show 'is 1.3 > 1.3?' (white)
+    show 1.3 > 1.3
+    show
+
+    show 'is 2.0 > 1.3?' (white)
+    show 2.0 > 1.3
+    show
+
+    show 'Done.'

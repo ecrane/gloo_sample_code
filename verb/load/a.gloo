@@ -1,0 +1,6 @@
+#
+# Do something when a file is loaded.
+#
+a [can] :
+  on_load [script] :
+    show 'a loaded' (blue)

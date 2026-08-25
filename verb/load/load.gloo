@@ -1,0 +1,12 @@
+#
+# Do something when a file is loaded.
+#
+load [can] :
+
+  msg [string] : This file loaded.
+
+  on_load [script] :
+    show ^.msg (white)
+    load verb/load/a
+    load verb/load/b
+    load verb/load/c
