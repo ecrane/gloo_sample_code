@@ -1,0 +1,19 @@
+# 
+# Unless statement example
+# 
+#  unless … do … 
+# 
+# See also, if verb which is opposite of unless
+# 
+unless [container] :
+
+	x [bool] : true
+	false_msg [string] : It is NOT true!
+
+	on_load [script] :
+		unless unless.x do show "first time: " + unless.false_msg
+		unless ^.x do show 'F' else show 'T'
+
+    put false into unless.x
+    unless unless.x do show "second time: " +  unless.false_msg
+		unless ^.x do show 'F' else show 'T'

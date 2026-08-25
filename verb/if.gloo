@@ -1,0 +1,23 @@
+# 
+# If statement example
+# 
+#  if … then … else …
+#  (else is optional)
+# 
+# See also, unless verb which is opposite of if
+# 
+if [container] :
+
+	x [bool] : false
+	true_msg [string] : It is true!
+
+	on_load [script] :
+		if if.x then show "first time: " + if.true_msg
+		if ^.x then show 'T' else show 'F'
+
+    put true into if.x
+    if if.x \
+			then show "second time: " + if.true_msg
+		if ^.x \
+			then show 'T' \
+			else show 'F'

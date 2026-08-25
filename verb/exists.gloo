@@ -1,0 +1,12 @@
+# 
+# Example of exists? keyword.
+# 
+exists [container] :
+
+	on_load [script] :
+		exists? object markdown
+		show it # false
+
+		load lib md
+		exists? object markdown
+		show it # true

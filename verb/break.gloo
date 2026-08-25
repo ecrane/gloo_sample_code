@@ -1,0 +1,13 @@
+# 
+# Break out of a script.
+# 
+break [can] :
+
+	x [bool] : false
+	
+	on_load [script] :
+		if ^.x then break
+		show 'should see this'
+    put true into ^.x
+		if ^.x then break
+		show 'should not see this'
