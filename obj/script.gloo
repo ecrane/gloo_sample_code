@@ -1,0 +1,24 @@
+#
+# Script objects
+#
+#  < o/script/empty
+# 
+script [can] :
+
+  msg [string] : hello world!
+  
+  info [script] : 
+    # This is a multi-line script
+    # that shows the message
+    show ^.msg
+    show 'thanks for playing!'
+
+  on_load [script] : 
+    run ^.info
+    run ^.1line
+
+  #
+  # A script can span multiple lines, or can
+  # be in a single line:
+  #
+  1line [script] : show 'a single line script'
