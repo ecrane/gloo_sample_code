@@ -1,0 +1,13 @@
+#
+# Example of usage of 'it'.
+#
+# It is the result of the last expression in a script.
+# 
+it_example [can] :
+
+  result [int] :
+
+	on_load [script] :
+    show 3 + 4
+    put it into ^.result
+    show ^.result

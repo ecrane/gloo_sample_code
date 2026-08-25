@@ -1,0 +1,34 @@
+#
+# Examples of literal values.
+#
+literal [can] :
+
+  s [string] : 
+  i [integer] : 
+  d [decimal] : 
+  b [boolean] : 
+
+  # 
+  # Use Literals to assign values
+  # 
+	on_load [script] :
+
+    # String literals
+    put 'Hello world.' into ^.s
+    show ^.s
+    put "You're Awesome!" into ^.s
+    show ^.s
+
+    # Number literals
+    put 1 into ^.i
+    show ^.i
+    put 3.12 into ^.d
+    show ^.d
+
+    # Boolean literals
+    # Boolean literals are case insensitive
+    put TRUE into ^.b
+    show ^.b
+    put false into ^.b
+    show ^.b
+    

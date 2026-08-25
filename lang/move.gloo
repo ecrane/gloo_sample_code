@@ -1,0 +1,13 @@
+#
+# Move an object.
+#
+can [can] :
+
+  two [string] : def
+
+  data [can] :
+    one [string] : abc
+
+	on_load [script] :
+		move can.two to can.data
+    list

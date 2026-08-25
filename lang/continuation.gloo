@@ -1,0 +1,11 @@
+#
+# Example of a continuation character in gloo scripts.
+#
+continuation [can] :
+
+  one [string] : Hello
+  two [string] : World!
+
+  on_load [script] :
+    show continuation.one and \
+      ' ' and continuation.two

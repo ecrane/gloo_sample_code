@@ -1,0 +1,36 @@
+#
+# Examples of value conversions.
+#
+convert [can] :
+
+  i [integer] : 1
+  d [decimal] : 7.75
+  s [string] : "hello"
+  b [boolean] : true
+  dt [datetime] : "2024-07-11 13:45:00"
+
+  # 
+  # Do some value conversions.
+  # 
+	on_load [script] :
+
+    # String to integer
+    put '3 third time' into ^.i
+    show ^.i
+
+    # String to decimal
+    put '3.12 more' into ^.d
+    show ^.d
+
+    # String to date
+    show ^.dt
+    put 'now' into ^.dt
+    show ^.dt
+
+    put 123 into ^.s
+    show ^.s
+
+    put 'false' into ^.b
+    show ^.b
+    put TRUE into ^.b
+    show ^.b

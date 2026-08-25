@@ -1,0 +1,24 @@
+#
+# Run a series of scripts, with waits.
+# Use for debugging.
+#
+wait [can] :
+
+	on_load [script] :
+    show 'waiting for 2 seconds…'
+    wait 2
+
+		run wait.one
+
+    show 'waiting for 1 second…'
+    wait 1
+    show 'done'
+    
+  one [script] :
+    show 'waiting for 2 seconds…'
+    wait 2
+    tell wait.two to run
+    
+  two [script] :
+    show 'waiting for 2 seconds…'
+    wait 2

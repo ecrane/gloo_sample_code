@@ -1,0 +1,22 @@
+#
+# Use here reference: ^
+#
+# Use ^ to refer to an object at "this" location.
+# Use ^^ to refer to an object at my parent's location.
+#   … and so on …
+# 
+here [can] :
+
+  s [str] : local string
+
+	on_load [script] :
+    show ^.s
+
+  a [can] :
+    s [str] : A string
+    b [can] :
+      s [str] : B string
+      on_load [script] :
+        show ^.s
+        show ^^.s
+        show ^^^.s
