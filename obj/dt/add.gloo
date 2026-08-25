@@ -1,0 +1,89 @@
+#
+# Add a number of days to a datetime.
+#
+add [can] :
+
+	# The date objects to tinker with.
+	d [date] :
+	dt [datetime] :
+	t [time] :
+
+	# Do a bunch of things
+	on_load [script] :
+		show '--- Current DATE ---' (white)
+		tell ^.d to now
+		show ^.d
+
+		show '--- Add a day ---' (white)
+		tell ^.d to add
+		show ^.d
+
+		show '--- Add 3 more days ---' (white)
+		tell ^.d to add ( "3 days" )
+		show ^.d
+
+		show '--- Add 1 week ---' (white)
+		tell ^.d to add ( "1 week" )
+		show ^.d
+
+		show '--- Add 7 months ---' (white)
+		tell ^.d to add ( "7 months" )
+		show ^.d
+
+		show '--- Add 1 year ---' (white)
+		tell ^.d to add ( "1 year" )
+		show ^.d
+
+		show "-----------------------------------------" (blue)
+		show '--- Current DATETIME ---' (white)
+		tell ^.dt to now
+		show ^.dt
+
+		show '--- Add a day ---' (white)
+		tell ^.dt to add
+		show ^.dt
+
+		show '--- Add 3 more days ---' (white)
+		tell ^.dt to add ( "3 days" )
+		show ^.dt
+
+		show '--- Add 1 week ---' (white)
+		tell ^.dt to add ( "1 week" )
+		show ^.dt
+
+		show '--- Add 7 months ---' (white)
+		tell ^.dt to add ( "7 months" )
+		show ^.dt
+
+		show '--- Add 1 year ---' (white)
+		tell ^.dt to add ( "1 year" )
+		show ^.dt
+
+		show "-----------------------------------------" (blue)
+		show '--- Current DATETIME ---' (white)
+		tell ^.dt to now
+		show ^.dt
+
+		show '--- Add an hour ---' (white)
+		tell ^.dt to add ( "1 hour" )
+		show ^.dt
+
+		show '--- Add 3 more hours ---' (white)
+		tell ^.dt to add ( "3 hours" )
+		show ^.dt
+
+		show "-----------------------------------------" (blue)
+		show '--- Current TIME ---' (white)
+		tell ^.t to now
+		show ^.t
+
+		show '--- Add an hour ---' (white)
+		tell ^.t to add ( "1 hour" )
+		show ^.t
+
+		show '--- Add 3 more hours ---' (white)
+		tell ^.t to add ( "3 hours" )
+		show ^.t
+
+
+		show 'Done.' (blue)

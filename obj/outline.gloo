@@ -1,0 +1,37 @@
+#
+# Convert flat elements to hierarchal HTML outline.
+# 
+outline [container] :
+	
+  on_load [script] :
+    tell outline.util to generate
+    show outline.util.data
+
+  src_data [container] :
+    1 [container] :
+      id [int] : 1
+      name [string] : a/b/c
+    2 [container] :
+      id [int] : 2
+      name [string] : a/b/d
+    3 [container] :
+      id [int] : 3
+      name [string] : a/b/e
+    4 [container] :
+      id [int] : 4
+      name [string] : x
+    5 [container] :
+      id [int] : 5
+      name [string] : x/y
+    6 [container] :
+      id [int] : 6
+      name [string] : x/y/z
+    7 [container] :
+      id [int] : 7
+      name [string] : last
+  
+  util [outline] :
+    object_source [alias] : outline.src_data
+    entity_path [string] : /entity/
+    data [string] :
+    

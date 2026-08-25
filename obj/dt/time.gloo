@@ -1,0 +1,13 @@
+#
+# Show the current time.
+#
+time [can] :
+
+	t [time] :
+
+	on_load [script] :
+		tell time.t to now
+		show time.t
+
+		put '1 hour from now' into time.t
+		show time.t

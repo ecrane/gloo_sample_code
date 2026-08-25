@@ -1,0 +1,53 @@
+#
+# Show the current date and time.
+#
+dt [can] :
+
+	# The datetime object to tinker with.
+	d [datetime] :
+
+	# Do a bunch of things
+	on_load [script] :
+		show '--- First showing current datetime ---' (white)
+		tell dt.d to now
+		show dt.d
+
+		show '--- Beginning of day ---' (white)
+		tell dt.d to begin_day
+		show dt.d
+
+		show '--- End of day ---' (white)
+		tell dt.d to end_day
+		show dt.d
+
+		show '--- Beginning of week ---' (white)
+		tell dt.d to begin_week
+		show dt.d
+
+		show '--- End of week ---' (white)
+		tell dt.d to end_week
+		show dt.d
+
+		show '--- 1 week from now ---' (white)
+		put '1 week from now' into dt.d
+		show dt.d
+
+		tell ^.d to now
+
+		show '--- Beginning of month ---' (white)
+		tell ^.d to begin_month
+		show ^.d
+
+		show '--- End of month ---' (white)
+		tell ^.d to end_month
+		show ^.d
+
+		show '--- Beginning of year ---' (white)
+		tell ^.d to begin_year
+		show ^.d
+
+		show '--- End of year ---' (white)
+		tell ^.d to end_year
+		show ^.d
+
+		show 'Done.' (blue)

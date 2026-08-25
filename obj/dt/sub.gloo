@@ -1,0 +1,89 @@
+#
+# Subtract a number of days from a datetime.
+#
+sub [can] :
+
+	# The date objects to tinker with.
+	d [date] :
+	dt [datetime] :
+	t [time] :
+
+	# Do a bunch of things
+	on_load [script] :
+		show '--- Current DATE ---' (white)
+		tell ^.d to now
+		show ^.d
+
+		show '--- Sub a day ---' (white)
+		tell ^.d to sub
+		show ^.d
+
+		show '--- Sub 3 more days ---' (white)
+		tell ^.d to sub ( "3 days" )
+		show ^.d
+
+		show '--- Sub 1 week ---' (white)
+		tell ^.d to sub ( "1 week" )
+		show ^.d
+
+		show '--- Sub 7 months ---' (white)
+		tell ^.d to sub ( "7 months" )
+		show ^.d
+
+		show '--- Sub 1 year ---' (white)
+		tell ^.d to sub ( "1 year" )
+		show ^.d
+
+		show "-----------------------------------------" (blue)
+		show '--- Current DATETIME ---' (white)
+		tell ^.dt to now
+		show ^.dt
+
+		show '--- Sub a day ---' (white)
+		tell ^.dt to sub
+		show ^.dt
+
+		show '--- Sub 3 more days ---' (white)
+		tell ^.dt to sub ( "3 days" )
+		show ^.dt
+
+		show '--- Sub 1 week ---' (white)
+		tell ^.dt to sub ( "1 week" )
+		show ^.dt
+
+		show '--- Sub 7 months ---' (white)
+		tell ^.dt to sub ( "7 months" )
+		show ^.dt
+
+		show '--- Sub 1 year ---' (white)
+		tell ^.dt to sub ( "1 year" )
+		show ^.dt
+
+		show "-----------------------------------------" (blue)
+		show '--- Current DATETIME ---' (white)
+		tell ^.dt to now
+		show ^.dt
+
+		show '--- Sub an hour ---' (white)
+		tell ^.dt to sub ( "1 hour" )
+		show ^.dt
+
+		show '--- Sub 3 more hours ---' (white)
+		tell ^.dt to sub ( "3 hours" )
+		show ^.dt
+
+		show "-----------------------------------------" (blue)
+		show '--- Current TIME ---' (white)
+		tell ^.t to now
+		show ^.t
+
+		show '--- Subtract an hour ---' (white)
+		tell ^.t to sub ( "1 hour" )
+		show ^.t
+
+		show '--- Subtract 3 more hours ---' (white)
+		tell ^.t to sub ( "3 hours" )
+		show ^.t
+
+
+		show 'Done.' (blue)

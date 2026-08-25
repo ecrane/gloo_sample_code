@@ -1,0 +1,32 @@
+#
+# Convert a datetime to a date.
+#
+convert [can] :
+
+	# The datetime object to tinker with.
+	dt [datetime] :
+
+	# Date
+	d [date] :
+
+	# Do a bunch of things
+	on_load [script] :
+		show '--- Beginning of week ---' (white)
+		tell convert.dt to now
+		tell convert.dt to begin_week
+		show convert.dt
+
+		show '--- Just the date ---' (white)
+		put convert.dt into convert.d
+		show convert.d
+
+		show '--- End of week ---' (white)
+		tell convert.dt to now
+		tell convert.dt to end_week
+		show convert.dt
+
+		show '--- Just the date ---' (white)
+		put convert.dt into convert.d
+		show convert.d
+
+		show 'Done.' (blue)
