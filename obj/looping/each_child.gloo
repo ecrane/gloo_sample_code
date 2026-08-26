@@ -1,0 +1,21 @@
+#
+# Show each child in a container.
+#
+each_child [can] :
+
+  # Iterator on children of a container.
+  for [each] :
+    child [alias] :
+    in [alias] : each_child.objs
+    do [script] : show ^.child
+
+  # Data
+  objs [can] :
+    1 [string] : one
+    2 [string] : two
+    3 [string] : three
+
+  # Run the iterator.
+  on_load [script] :
+    show 'showing children in container' (white)
+    tell each_child.for to run

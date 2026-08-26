@@ -1,0 +1,18 @@
+#
+# Show each file in a folder.
+#
+each_file [can] :
+
+  # Iterator on files in a folder.
+  for [each] :
+    file [file] :
+    # ext [string] : md
+    in [file] : 
+    do [script] : show ^.file
+
+  # Run the iterator.
+  on_load [script] :
+    put $.working_dir and '/' into ^.for.in
+    show 'showing files in folder' (white)
+    show ^.for.in (white)
+    tell each_file.for to run

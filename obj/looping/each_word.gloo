@@ -1,0 +1,15 @@
+#
+# Show each word in a string.
+#
+each_word [can] :
+
+	# Iterator on words in a string.
+	for [each] : 
+		word [string] :
+		in [string] : one word at a time
+		do [script] : show ^.word
+
+  # Run the iterator.
+  on_load [script] :
+    show 'showing words in a string' (white)
+    tell each_word.for to run

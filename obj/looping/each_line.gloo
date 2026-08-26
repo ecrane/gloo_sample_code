@@ -1,0 +1,23 @@
+#
+# Show each line in a string.
+#
+each_line [can] :
+
+  # Iterator on children of a container.
+  for [each] :
+		line [string] :
+    in [alias] : ^.in
+    do [script] : show ^.line
+
+  # Data
+	in [txt] : BEGIN
+		I will now write a poem
+		of several lines
+		Then I will show it
+		and it will be awesome!
+		END
+
+  # Run the iterator.
+  on_load [script] :
+    show 'showing lines in a text block' (white)
+    tell each_line.for to run
