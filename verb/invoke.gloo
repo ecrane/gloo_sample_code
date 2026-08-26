@@ -1,0 +1,46 @@
+#
+# Sample invoke code.
+#
+# See also the function examples in obj/function.gloo
+# 
+invoke [can] :
+
+	on_load [script] :
+		show "Invoking..."
+
+    invoke invoke.add 3 4
+    show it
+    show invoke( invoke.add 10 3 )
+
+    put ~>( invoke.add 7 5 ) into ^.sum
+    show ^.sum
+    
+    invoke invoke.greet ^.name
+    show it
+    show ~>( invoke.greet 'World' )
+
+    show 'done' (white)
+
+  #
+  # Say hi to person (name)
+  #
+  greet [ƒ] :
+    on_invoke [script] :
+      put 'Hi, ' + ^.params.name into ^.result
+    params [container] :
+      name [string] : none
+    result [string] :
+
+  name [string] : Jasper
+  sum [integer] : 0
+
+  #
+  # Add 2 numbers
+  #
+  add [ƒ] :
+    on_invoke [script] :
+      put ^.params.x and ^.params.y into ^.result
+    params [container] :
+      x [int] :
+      y [int] :
+    result [string] :

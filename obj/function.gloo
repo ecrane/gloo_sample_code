@@ -1,0 +1,40 @@
+# 
+# Function examples.
+# 
+# See also invoke in verb/invoke.gloo
+# 
+function [can] :
+
+	name [string] : Jasper
+
+	on_load [script] :
+		show 'running function examples' (white)
+
+		invoke function.greet ^.name
+		show it
+	  
+		invoke function.add 3 4
+		show it
+
+		show 'done' (white)
+
+	#	
+	# Say hi to person (name)
+	# 
+  greet [ƒ] :
+    on_invoke [script] :
+      put 'Hi, ' + ^.params.name into ^.result
+    params [container] :
+      name [string] : none
+    result [string] : 
+
+	#	
+	# Add 2 numbers
+	# 
+  add [ƒ] :
+    on_invoke [script] :
+      put ^.params.x and ^.params.y into ^.result
+    params [container] :
+      x [int] : 
+			y [int] :
+    result [string] : 
