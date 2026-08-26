@@ -1,0 +1,8 @@
+#
+# Execute a system call.
+#
+execute [container] :
+  cmd [string] : ls -lAF
+	on_load [script] :
+		show "  ** ls -lAF **" (white)
+    exec ^.cmd
