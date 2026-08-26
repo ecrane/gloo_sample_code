@@ -8,6 +8,13 @@
 system [container] :
 
 	on_load [script] :
+		run ^.show_config
+		run ^.show_terminal
+		run ^.show_platform
+		show gloo.line
+
+	show_config [script] :
+    show $.line " ----- Configuration -----" (yellow)
 		show "  hostname: " + $.hostname (white)
 		show "  user: " + $.user (white)
 		show "  user home: " + $.user_home (white)
@@ -17,11 +24,20 @@ system [container] :
 		show "  gloo projects: " + $.gloo_projects (white)
 		show "  gloo log: " + $.gloo_log (white)
 
-		show ''
+	show_terminal [script] :
+    show $.line " ----- Terminal -----" (yellow)
     show "  lines: " + gloo.screen_lines (white)
-    show "  cols: " + $.screen_cols (white)
-    show "  lines: " + $.screen.lines (white)
-    show "  cols: " + $.screen.cols (white)
+    show "  cols: " + gloo.screen_cols (white)
+		# NOTE that the following alternate syntax also works:
+    # show "  lines: " + $.screen.lines (white)
+    # show "  cols: " + $.screen.cols (white)
 
-		show ''
-		show "line…" + $.line + "  divider"
+  show_platform [script] :
+    show $.line " ----- Platform -----" (yellow)
+    show "  cpu: " + $.platform_cpu (white)
+    show "  os: " + $.platform_os (white)
+    show "  version: " + $.platform_version (white)
+    show "  windows? " + $.platform_windows? (white)
+    show "  unix? " + $.platform_unix? (white)
+    show "  linux? " + $.platform_linux? (white)
+    show "  mac? " + $.platform_mac? (white)
