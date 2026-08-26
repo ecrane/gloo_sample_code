@@ -1,0 +1,6 @@
+#
+# Do something when gloo quits.
+#
+quit [can] :
+  msg [string] : Gloo is quitting now
+  on_quit [script] : show ^.msg (white)

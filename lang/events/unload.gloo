@@ -1,0 +1,13 @@
+#
+# Do something when a file is un-loaded.
+#
+unload [can] :
+
+  msg [string] : This file is going to un-load now.
+
+  on_unload [script] :
+    show ^.msg (yellow)
+
+  on_load [script] : 
+    tell unload to unload
+    list

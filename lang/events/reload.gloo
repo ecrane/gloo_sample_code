@@ -1,0 +1,10 @@
+#
+# Do something when a file is re-loaded.
+#
+reload [can] :
+  on_reload [script] :
+    show "reloading"
+
+  on_load [script] : 
+    show "loading"
+    tell reload to reload
