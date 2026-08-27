@@ -1,0 +1,16 @@
+#
+# Get values from within a JSON object.
+#
+get [can] :
+  on_load [script] :
+    tell get.payload to get ('msg')
+    show it
+    tell get.payload to get ('sub.data')
+    show it
+    tell get.payload to get ('sub.child.msg')
+    show it
+  payload [json] : BEGIN
+    { "msg":"The message from inside a JSON block",
+      "sub":{"data":"in sub-object",
+        "child":{"msg":"third level"}} }
+    END

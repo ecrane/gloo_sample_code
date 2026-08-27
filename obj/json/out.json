@@ -1,0 +1,9 @@
+{
+  "msg": "The message from inside a JSON block",
+  "sub": {
+    "data": "in sub-object",
+    "child": {
+      "msg": "third level"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+#
+# Convert Object container to JSON.
+#
+json [can] :
+  on_load [script] :
+    list json.objs
+    show "  -------------------------"
+    tell json.j to set (json.objs)
+    show json.j
+    show "  -------------------------"
+  j [json] : 
+  objs [can] :
+    title [string] : Brute Force
+    quotation [string] : When in doubt, use brute force
+    author [string] : Eric Steven Raymond
+    source [string] : The Art of Unix Programming

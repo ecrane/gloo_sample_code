@@ -1,0 +1,21 @@
+#
+# Convert JSON to values in container of objects.
+#
+json [can] :
+  on_load [script] :
+    list json.objs
+    show "  -------------------------"
+    show json.j
+    show "  -------------------------"
+    tell json.j to parse (json.objs)
+    list json.objs
+  j [json] : BEGIN
+    { "title":"Brute Force",
+    "quotation":"When in doubt, use brute force.",
+    "author":"Eric Steven Raymond",
+    "source":"The Art of Unix Programming",
+    "link":{"url":"https://google.com/"}}
+    END
+  objs [can] :
+    title [string] :
+    quotation [string] :

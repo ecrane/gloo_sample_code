@@ -1,0 +1,18 @@
+#
+# Make the JSON block pretty and write it to a file
+#
+write [can] :
+  path [string] : /obj/json/out.json
+  f [file] : 
+  on_load [script] :
+    show write.payload
+    tell write.payload to pretty
+    show write.payload
+    put gloo.gloo_projects and write.path into write.f
+    show write.f
+    tell write.f to write (write.payload)
+  payload [json] : BEGIN
+    { "msg":"The message from inside a JSON block",
+      "sub":{"data":"in sub-object",
+        "child":{"msg":"third level"}} }
+    END
