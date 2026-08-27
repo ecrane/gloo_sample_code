@@ -1,0 +1,56 @@
+#
+# Get information about a file.
+#
+info [can] :
+
+	path [string] : obj/file/in.txt
+  f [file] : 
+	parent_dir [file] : 
+
+  on_load [script] :
+    put gloo.gloo_projects and info.path into info.f
+
+		run info.name
+		run info.exists
+		run info.dir
+
+	name [script] :
+	  show "-------------"
+		show "Full file name:  " + ^.f
+
+		check ^.f for get_name
+		show "The file name alone: " and it
+
+		check ^.f for get_ext
+		show "The file extension: " and it
+
+		check ^.f for get_parent
+		put it into ^.parent_dir
+		show "The file path: " and ^.parent_dir
+
+
+  #
+  # Check to see if a file exists and what sort of file it is.
+  #
+  exists [script] :
+    show "-------------"
+    show "Checking to see if file exists:  " + ^.f
+    check ^.f for exists?
+    show it
+    check ^.f for is_dir?
+    show "is a directory?  " + it
+    check ^.f for is_file?
+    show "is a file?  " + it
+
+  #
+  # Parent Directory Info
+  #
+  dir [script] :
+    show "-------------"
+    show "Checking to see if the parent directory exists:  " + ^.parent_dir
+    check ^.parent_dir for exists?
+    show it
+    check ^.parent_dir for is_dir?
+    show "is a directory?  " + it
+    check ^.parent_dir for is_file?
+    show "is a file?  " + it

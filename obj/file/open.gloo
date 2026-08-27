@@ -1,0 +1,17 @@
+#
+# Open a file in the file system.
+# First opens a directory, then a txt file.
+#
+open [can] :
+
+  d_path [string] : obj/file/
+  f_path [string] : obj/file/in.txt
+  f [file] : 
+
+  on_load [script] :
+    put gloo.gloo_projects and open.d_path into open.f
+    tell open.f to open
+
+    put gloo.gloo_projects and open.f_path into open.f
+    tell open.f to open
+    

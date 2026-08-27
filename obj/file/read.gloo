@@ -3,19 +3,19 @@
 #
 read [can] :
 
-	msg [string] : 
-  path [string] : /obj/file/in.txt
+  msg [string] : 
+  path [string] : obj/file/in.txt
   f [file] : 
 
   on_load [script] :
     put gloo.gloo_projects and read.path into read.f
 
-		# Read the entire file into the given target object
+    # Read the entire file into the given target object
     tell read.f to read (read.msg)
     show read.msg
 		
 		show '--------'
 
-		# Can also read into it
+    # Can also read into it
     tell read.f to read
     show it

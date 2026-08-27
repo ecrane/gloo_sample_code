@@ -4,7 +4,7 @@
 write [can] :
 
   msg [string] : Test message
-  path [string] : /obj/file/out.txt
+  path [string] : obj/file/out.txt
   f [file] : 
 
   on_load [script] :
