@@ -1,0 +1,12 @@
+#
+# Write a file.
+#
+write [can] :
+
+  msg [string] : Test message
+  path [string] : /obj/file/out.txt
+  f [file] : 
+
+  on_load [script] :
+    put gloo.gloo_projects and write.path into write.f
+    tell write.f to write (write.msg)
