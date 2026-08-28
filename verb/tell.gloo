@@ -1,13 +1,19 @@
-# 
+#
 # Tell verb.
-# Send a message to an object.
-# 
+#
+# 'tell' sends a message to an object.  'check' (see verb/check.gloo)
+# is the exact same operation - the two names exist so gloo code reads
+# like natural communication.  By convention:
+#
+#   tell {obj} to {message}     - trigger an action / change state
+#   check {obj} for {message}   - investigate state (a yes/no question)
+#
 tell [container] :
 
-  # 
-  # Send a messages to objects.
-  # Available messages depend on the type of object.
-  # 
+  #
+  # Send messages to objects.  Available messages depend on the type
+  # of object.  These are all actions, so they use 'tell'.
+  #
   on_load [script] :
     tell tell.code to run
 

@@ -1,0 +1,128 @@
+#
+# Check verb.
+#
+# 'check' sends a message to an object - the exact same operation as
+# 'tell' (see verb/tell.gloo).  The two names exist so gloo code reads
+# like natural communication.  By convention:
+#
+#   tell {obj} to {message}     - trigger an action / change state
+#   check {obj} for {message}   - investigate state (a yes/no question)
+#
+# The answer to a check lands in 'it', so it pairs naturally with
+# if / unless.
+#
+#   check {path} for {question}
+#   <-    {path} for {question}      (shortcut)
+#
+check [container] :
+
+  # Constants used by the checks below.
+  greeting [string] : Hello, World!
+  empty_msg [string] :
+
+  data [can] :
+    first [string] : one
+    second [string] : two
+
+  #
+  # Run each group of checks in turn.
+  #
+  on_load [script] :
+    run check.any_object_checks
+    run check.string_checks
+    run check.container_checks
+    run check.acting_on_the_result
+    run check.missing_message_error
+    show 'Done.'
+
+  #
+  # Questions that work on any object:
+  #   blank?        - is the value empty / whitespace only?
+  #   contains?     - does the object have any children?
+  #   responds_to?  - does the object understand a given message?
+  #
+  any_object_checks [script] :
+    show 'Any-object checks:' (white)
+
+    show 'Is the greeting blank?'
+    check check.greeting for blank?
+    show it
+
+    show 'Is empty_msg blank?'
+    check check.empty_msg for blank?
+    show it
+
+    show 'Does the data container have children?'
+    check check.data for contains?
+    show it
+
+    show 'Does the greeting (a string) have children?'
+    check check.greeting for contains?
+    show it
+
+    show 'Does the greeting respond to up?'
+    check check.greeting for responds_to? ( "up" )
+    show it
+
+    show 'Does the greeting respond to fly?'
+    check check.greeting for responds_to? ( "fly" )
+    show it
+
+  #
+  # String questions (also available on text objects).
+  #
+  string_checks [script] :
+    show 'String checks:' (white)
+
+    show 'Does the greeting start with Hello?'
+    check check.greeting for starts_with? ( "Hello" )
+    show it
+
+    show 'Does the greeting end with an exclamation point?'
+    check check.greeting for ends_with? ( "!" )
+    show it
+
+    show 'Does the greeting contain World?'
+    check check.greeting for substring? ( "World" )
+    show it
+
+    show 'Does the greeting contain xyz?'
+    check check.greeting for substring? ( "xyz" )
+    show it
+
+  #
+  # Container question: does a child with the given name exist?
+  #
+  container_checks [script] :
+    show 'Container checks:' (white)
+
+    show 'Is there a child named first?'
+    check check.data for child_exists ( "first" )
+    show it
+
+    show 'Is there a child named third?'
+    check check.data for child_exists ( "third" )
+    show it
+
+  #
+  # The point of a check is to act on the answer. 'it' holds the
+  # result, so a check pairs naturally with if / unless.
+  #
+  acting_on_the_result [script] :
+    show 'Acting on the result:' (white)
+
+    check check.empty_msg for blank?
+    if it then put 'default value' into check.empty_msg
+    show check.empty_msg
+
+    # The '<-' shortcut means the same as 'check'.
+    <- check.greeting for starts_with? ( "Hello" )
+    if it then show 'greeting looks right'
+
+  #
+  # If the 'for' keyword or the message is missing, check raises:
+  #   Missing message!
+  #
+  missing_message_error [script] :
+    show 'Expect an error:' (white)
+    check check.greeting
