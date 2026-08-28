@@ -1,0 +1,88 @@
+#
+# Exception handling.
+#
+# Gloo has two independent handler channels, and they never trigger
+# each other:
+#
+#   on_error      - fires for a checked, anticipated error in gloo
+#                   code (a bad object path, a missing target, a verb
+#                   used wrongly).  Details land in a sibling
+#                   'error_data' container.
+#
+#   on_exception  - fires for an UNanticipated Ruby exception that
+#                   gloo's safety net catches.  Should rarely fire in
+#                   real code.  Details land in a sibling
+#                   'exception_data' container.
+#
+# In BOTH cases the failing line is abandoned and execution continues
+# with the next line - a handler is a place to log or react, not a
+# way to retry.
+#
+# A handler script and its data container are siblings; they can sit
+# at the root of a file or nested inside a container (as here).
+#
+exceptions [container] :
+
+  #
+  # Handler for checked gloo-level errors.
+  # 'error_data' is populated by the engine before this runs.
+  #
+  on_error [script] :
+    show 'on_error fired -> ' + ^.error_data.message (yellow)
+
+  error_data [can] :
+    message [string] :
+    backtrace [string] :
+
+  #
+  # Handler for unanticipated Ruby exceptions (see demo_exception).
+  # 'exception_data' is populated by the engine before this runs.
+  #
+  on_exception [script] :
+    show 'on_exception fired -> ' + ^.exception_data.message (yellow)
+
+  exception_data [can] :
+    message [string] :
+    backtrace [string] :
+
+  #
+  # Only the clean, common case runs automatically.  demo_exception
+  # is left for you to run by hand - see its note.
+  #
+  on_load [script] :
+    run exceptions.demo_error
+    show 'Done.'
+
+  #
+  # A bad object path is a checked error: 'on_error' fires, then the
+  # script keeps going with the line after the one that failed.
+  #
+  demo_error [script] :
+    show 'Sending a message to an object that does not exist...' (white)
+    tell no_such_object_anywhere to run
+    show 'execution continued past the bad line'
+
+    show 'The message is also available from the handler data:'
+    show exceptions.error_data.message
+
+  #
+  # 'throw' deliberately raises a Ruby exception so you can exercise
+  # the 'on_exception' pipeline (mainly useful in tests).
+  #
+  #   throw                    - default message
+  #   throw "some message"     - message is an evaluated expression
+  #
+  # Run it yourself:  > run exceptions.demo_exception
+  #
+  # Heads up: because gloo logs every caught exception, running this
+  # also prints the exception message and a (truncated) Ruby
+  # backtrace to the console.  That noise IS the logging working -
+  # 'on_exception' still fires and execution still continues.
+  #
+  demo_exception [script] :
+    show 'Throwing on purpose...' (white)
+    throw "something unexpected happened"
+    show 'execution continued past the throw'
+
+    show 'The message is also available from the handler data:'
+    show exceptions.exception_data.message
