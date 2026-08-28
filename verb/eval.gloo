@@ -1,0 +1,136 @@
+#
+# Eval verb.
+#
+# 'eval' evaluates an expression and puts the result in 'it' - and
+# does nothing else.  It does not print the result (that is 'show')
+# and it does not store it in a named object (that is 'put').  Use
+# 'eval' to stage a value you will consume right away through 'it'.
+#
+#   eval {expression}
+#   noop                (bare 'eval': just sets 'it' to true - a deliberate no-op)
+#
+# WHY IT EXISTS: 'eval' was added for the gloo-test framework.  The
+# 'assert' and 'refute' verbs only look at 'it'.  Many verbs and
+# messages already leave a boolean there, but for expressions and
+# comparisons that don't, 'eval' is the bridge - see the "Testing"
+# section at the bottom of this file.
+#
+# See also: put (evaluate and store), show (evaluate and print),
+#           it (the last result), assert / refute (gloo-test).
+#
+eval [container] :
+
+  count [int] : 5
+  name [string] : gloo
+
+  #
+  # Run each group in turn.
+  #
+  on_load [script] :
+    run eval.arithmetic
+    run eval.comparisons
+    run eval.feeding_it_forward
+    run eval.three_ways
+    run eval.the_no_op
+    show 'Done.'
+
+  #
+  # Evaluate an expression; the answer lands in 'it'.
+  #
+  arithmetic [script] :
+    show 'Arithmetic:' (white)
+
+    show 'count times three:'
+    eval eval.count * 3
+    show it
+
+    show 'a string built from two literals:'
+    eval "hello " "world"
+    show it
+
+  #
+  # A comparison evaluates to a boolean.
+  #
+  comparisons [script] :
+    show 'Comparisons:' (white)
+
+    show 'is count equal to 5?'
+    eval eval.count = 5
+    show it
+
+    show 'is count greater than 10?'
+    eval eval.count > 10
+    show it
+
+  #
+  # 'eval' leaves its result in 'it', ready for the next statement -
+  # store it with 'put', or branch on it with 'if' / 'unless'.
+  #
+  feeding_it_forward [script] :
+    show 'Feeding it forward:' (white)
+
+    eval eval.count + 1
+    put it into eval.count
+    show eval.count
+
+    eval eval.name = "gloo"
+    if it then show 'the name is gloo'
+
+  #
+  # eval / put / show all evaluate an expression the same way. They
+  # differ only in the side effect: eval keeps the result in 'it',
+  # put also stores it in a named object, show also prints it.
+  #
+  three_ways [script] :
+    show 'Same evaluation, different side effect:' (white)
+
+    eval 2 + 2
+    show it
+
+    put 2 + 2 into eval.count
+    show eval.count
+
+    show 2 + 2
+
+  #
+  # 'eval' with no expression just sets 'it' to true. The shortcut
+  # 'noop' spells the intent out: a statement that does nothing.
+  #
+  the_no_op [script] :
+    show 'The no-op:' (white)
+
+    eval
+    show it
+
+    noop
+    show it
+
+#
+# Testing - the reason 'eval' was added.
+#
+# 'assert' and 'refute' (from the gloo-test core library) check the
+# value of 'it'.  Many verbs and messages already leave a boolean
+# there, but for expressions and comparisons that don't, run 'eval'
+# first to put one there.  The most common pattern is
+# 'eval it = {expected}' - take whatever the last verb left in 'it'
+# and compare it to the expected value.
+#
+# This needs 'load lib test', a [test] object, and a run with
+# 'gloo --test', so it is shown here as a comment rather than run:
+#
+#   check_upcase [test] :
+#     description [string] : up-cases a string
+#     on_test [script] :
+#       put 'gloo' into my.str
+#       tell my.str to up
+#       eval it = 'GLOO'
+#       assert "expected the string to be upper-cased"
+#
+#       eval 2 + 2 = 5
+#       refute "two plus two is not five"
+#
+#       noop
+#       assert "noop leaves it true"
+#
+# For runnable gloo-test examples, see the interpreter's test.gloo/
+# tree (e.g. test.gloo/verbs/eval.test.gloo).
