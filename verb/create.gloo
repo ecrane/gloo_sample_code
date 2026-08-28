@@ -1,0 +1,95 @@
+#
+# Create verb.
+#
+# 'create' builds an object at run time.  Most objects in a gloo
+# program are declared statically in the file:
+#
+#   greeting [string] : Hello
+#
+# 'create' does the same thing from inside a script, or at the gloo
+# prompt:
+#
+#   create {path} as {type} : {value}      type and value both optional
+#   ` {path} as {type} : {value}           the shortcut is a backtick
+#
+# The path is root-relative.  'it' is set to the new object's value.
+# If an object already exists at the path, 'create' leaves it alone.
+#
+# See also: put (set a value on an existing object), and the static
+#           'name [type] : value' declaration form.
+#
+create [container] :
+
+  bag [can] :
+
+  #
+  # Run each group in turn.
+  #
+  on_load [script] :
+    run create.the_forms
+    run create.nesting
+    run create.leaves_existing_alone
+    run create.bad_path
+    show 'Done.'
+
+  #
+  # Type and value are each optional, in any combination.
+  #
+  the_forms [script] :
+    show 'The forms:' (white)
+
+    create create.a as integer : 10
+    show create.a
+
+    create create.b as string
+    show 'b - a string with no value given, so the type default (empty):'
+    show create.b
+
+    create create.c : 'untyped, but with a value'
+    show create.c
+
+    create create.d
+    show 'd - bare: untyped and empty:'
+    show create.d
+
+    show 'it holds the new value:'
+    create create.e as integer : 7
+    show it
+
+    ` create.f as string : 'made with the backtick shortcut'
+    show create.f
+
+  #
+  # A dotted path nests the new object.  The parent container must
+  # already exist (create it first if needed).
+  #
+  nesting [script] :
+    show 'Nesting:' (white)
+
+    create create.group as container
+    create create.group.x as integer : 1
+    create create.group.y as integer : 2
+    list create.group
+
+    create create.bag.item as string : 'in the pre-declared bag'
+    show create.bag.item
+
+  #
+  # 'create' will not overwrite an object that already exists at the
+  # path.  The existing value stays, and 'it' gets that value.
+  #
+  leaves_existing_alone [script] :
+    show 'Existing objects are left alone:' (white)
+
+    create create.keep as string : 'original'
+    create create.keep as string : 'this is ignored'
+    show create.keep
+
+  #
+  # Creating under a path whose parent does not exist is an error.
+  # Execution continues with the next line.
+  #
+  bad_path [script] :
+    show 'A bad path is an error:' (white)
+    create create.nope.deep as string : 'x'
+    show 'continued past the bad path'
