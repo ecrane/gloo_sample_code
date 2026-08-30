@@ -1,0 +1,81 @@
+#
+# ERB object.
+#
+# An 'erb' renders an ERB (Embedded Ruby) template.  It has three
+# children:
+#
+#   template   the template text - <%= x %> inserts a value,
+#              <% ... %> runs Ruby without inserting anything
+#   params     a container; each child's name is a variable the
+#              template can reference by that name
+#   result     where 'run' writes the rendered text
+#
+# Message:
+#   run   render 'template' with 'params' into 'result'
+#
+# 'template' can also be an [alias] pointing at a shared text object,
+# so several erb objects can render the same template.
+#
+erb [can] :
+
+  shared_line [text] : [<%= level %>] <%= msg %>
+
+  #
+  # Straight value interpolation.
+  #
+  greeting [erb] :
+    template [text] : <%= hello %>, <%= subject %>!
+    params [can] :
+      hello [string] : Hello
+      subject [string] : world
+    result [text] :
+
+  #
+  # A little logic inside the tag.
+  #
+  status [erb] :
+    template [text] : Account <%= id %> is <%= active == "yes" ? "ACTIVE" : "closed" %>.
+    params [can] :
+      id [string] : 4471
+      active [string] : no
+    result [text] :
+
+  #
+  # template is an alias to the shared_line text above.
+  #
+  logline [erb] :
+    template [alias] : erb.shared_line
+    params [can] :
+      level [string] : WARN
+      msg [string] : disk almost full
+    result [text] :
+
+  on_load [script] :
+    run erb.interpolation
+    run erb.with_logic
+    run erb.shared_template
+    show 'Done.'
+
+  interpolation [script] :
+    show 'Interpolation:' (white)
+    run erb.greeting
+    show erb.greeting.result
+
+  with_logic [script] :
+    show 'Logic in the template:' (white)
+    run erb.status
+    show erb.status.result
+
+  #
+  # Render the shared template, then change params and render again.
+  #
+  shared_template [script] :
+    show 'Shared template:' (white)
+
+    run erb.logline
+    show erb.logline.result
+
+    put 'ERROR' into erb.logline.params.level
+    put 'disk full' into erb.logline.params.msg
+    run erb.logline
+    show erb.logline.result

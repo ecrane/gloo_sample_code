@@ -1,0 +1,80 @@
+#
+# Untyped object.
+#
+# A type tells gloo which messages an object can receive - 'up' and
+# 'trim' for a string, 'inc' for an integer, 'run' for a script, and
+# so on.  An object does NOT have to have a type.  When it doesn't,
+# it is 'untyped' (short name 'any').
+#
+# Declare an untyped object with a bare colon, with [any], or by
+# creating one with no 'as':
+#
+#   slot :
+#   slot [any] :
+#   create slot
+#
+# Reach for untyped when you only need to hold, compare, or show a
+# value and don't need any type-specific behaviour - a generic result
+# slot, a config value passed straight through, or a field whose kind
+# of value changes over its life.
+#
+untyped [can] :
+
+  slot :
+  flag [any] :
+
+  on_load [script] :
+    run untyped.holds_anything
+    run untyped.base_messages
+    run untyped.no_type_messages
+    show 'Done.'
+
+  #
+  # One untyped object can hold values of different kinds over time.
+  # Comparisons are by value.
+  #
+  holds_anything [script] :
+    show 'Holds anything:' (white)
+
+    put 'some text' into untyped.slot
+    show untyped.slot
+
+    put 123 into untyped.slot
+    show untyped.slot
+
+    put true into untyped.slot
+    eval untyped.slot = true
+    show it
+
+  #
+  # The messages every object understands still work on an untyped
+  # object: blank?, contains?, responds_to?, reload, unload.
+  #
+  base_messages [script] :
+    show 'Base messages still work:' (white)
+
+    show 'flag blank to start?'
+    check untyped.flag for blank?
+    show it
+
+    put 'set' into untyped.flag
+    show 'flag blank now?'
+    check untyped.flag for blank?
+    show it
+
+  #
+  # Type-specific messages do not.  'up' belongs to string; an
+  # untyped object holding a string still can't receive it.
+  #
+  no_type_messages [script] :
+    show 'Type-specific messages do not:' (white)
+
+    put 'hello' into untyped.slot
+    show 'does slot respond to up?'
+    check untyped.slot for responds_to? ( "up" )
+    show it
+
+    show 'Expect an error:'
+    tell untyped.slot to up
+    show 'slot is unchanged:'
+    show untyped.slot

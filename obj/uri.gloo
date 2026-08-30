@@ -1,0 +1,70 @@
+#
+# URI (URL) object.
+#
+# A 'uri' holds a URL as its value.  Its messages pull the pieces of
+# that URL apart, each putting the answer in 'it':
+#
+#   get_scheme     https
+#   get_host       example.com
+#   get_path       /docs/guide
+#   get_query      page=3&sort=asc
+#   get_fragment   install
+#
+# Two more messages are not run here:
+#   open              open the URL in the default browser
+#   get_cert_expires  fetch the site's TLS certificate expiry (network)
+#
+uri [can] :
+
+  link [uri] : https://example.com:8443/docs/guide?page=3&sort=asc#install
+  bare [uri] : https://example.com
+
+  on_load [script] :
+    run uri.parts
+    run uri.missing_parts
+    show 'Done.'
+
+  #
+  # Pull the pieces out of a full URL.
+  #
+  parts [script] :
+    show 'Parts of the URL:' (white)
+    show uri.link
+
+    show 'scheme:'
+    tell uri.link to get_scheme
+    show it
+
+    show 'host (no port):'
+    tell uri.link to get_host
+    show it
+
+    show 'path:'
+    tell uri.link to get_path
+    show it
+
+    show 'query:'
+    tell uri.link to get_query
+    show it
+
+    show 'fragment:'
+    tell uri.link to get_fragment
+    show it
+
+  #
+  # Pieces that aren't in the URL come back empty.
+  #
+  missing_parts [script] :
+    show 'A bare URL has no path, query, or fragment:' (white)
+    show uri.bare
+
+    tell uri.bare to get_path
+    put it into uri.result
+    show 'path (empty):'
+    show uri.result
+
+    show 'path is blank?'
+    check uri.result for blank?
+    show it
+
+  result [string] :
