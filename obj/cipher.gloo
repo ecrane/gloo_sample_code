@@ -1,0 +1,78 @@
+#
+# Cipher object.
+#
+# A 'cipher' encrypts and decrypts a string with AES-256-CBC.  It has
+# three string children:
+#
+#   key           the encryption key       (base64)
+#   init_vector   the initialization vector (base64)
+#   data          the text to work on - encrypted or decrypted in place
+#
+# Messages:
+#   generate_keys   fill key and init_vector with fresh random values
+#   encrypt         replace data with its ciphertext
+#   decrypt         replace data with its plaintext
+#
+cipher [can] :
+
+  secret [string] : Meet me at dawn.
+
+  #
+  # A cipher instance.  Create the three children yourself, or let
+  # 'create ... as cipher' add them.
+  #
+  box [cipher] :
+    key [string] :
+    init_vector [string] :
+    data [string] :
+
+  #
+  # A second cipher, used below to show that anyone holding the same
+  # key + init_vector can read the ciphertext.
+  #
+  reader [cipher] :
+    key [string] :
+    init_vector [string] :
+    data [string] :
+
+  on_load [script] :
+    run cipher.round_trip
+    run cipher.shared_keys
+    show 'Done.'
+
+  #
+  # Encrypt a string, then decrypt it back to the original.
+  #
+  round_trip [script] :
+    show 'Round trip:' (white)
+
+    tell cipher.box to generate_keys
+    show 'key:'
+    show cipher.box.key
+
+    put cipher.secret into cipher.box.data
+    tell cipher.box to encrypt
+    show 'ciphertext:'
+    show cipher.box.data
+
+    tell cipher.box to decrypt
+    show 'decrypted:'
+    show cipher.box.data
+
+  #
+  # The ciphertext is only useful to someone with the same key and
+  # init_vector.  Copy them to a second cipher and it can decrypt.
+  #
+  shared_keys [script] :
+    show 'Shared keys:' (white)
+
+    put cipher.secret into cipher.box.data
+    tell cipher.box to encrypt
+
+    put cipher.box.key into cipher.reader.key
+    put cipher.box.init_vector into cipher.reader.init_vector
+    put cipher.box.data into cipher.reader.data
+
+    tell cipher.reader to decrypt
+    show 'reader decrypted:'
+    show cipher.reader.data
