@@ -1,0 +1,65 @@
+#
+# gloo-yaml: read and write a YAML file.
+#
+# 'load lib yaml' at the top of the file registers the yaml object
+# type before the declarations below are parsed.  Run it directly:
+#
+#   gloo core_libraries/yaml/settings.gloo
+#
+load lib yaml
+
+#
+# A 'yaml' object holds the path to a YAML file as its value.  Its two
+# messages take a container and match the container's children to the
+# file's top-level keys by name:
+#
+#   load ({container})   file keys          -> container children
+#   save ({container})   container children -> file keys (merged)
+#
+settings [can] :
+
+  # The YAML file. Built from the project path so it resolves from
+  # any working directory.
+  path [string] : core_libraries/yaml/settings.yaml
+  file [yaml] :
+
+  # Children here are matched by name to keys in the file.
+  data [can] :
+    app_name [string] :
+    theme [string] :
+    default_view [string] :
+
+  on_load [script] :
+    put $.gloo_projects + ^.path into ^.file
+    run settings.read
+    run settings.write_and_restore
+    show 'Done.'
+
+  #
+  # load: pull the file's values into the container.
+  #
+  read [script] :
+    show 'Reading settings.yaml:' (white)
+    tell ^.file to load (^.data)
+    show 'app_name: ' + ^.data.app_name
+    show 'theme: ' + ^.data.theme
+    show 'default_view: ' + ^.data.default_view
+
+  #
+  # save: write the container back to the file.  Here we flip the
+  # theme, save, reload to prove it persisted, then restore it so the
+  # sample file is unchanged after running.
+  #
+  write_and_restore [script] :
+    show 'Changing theme to dark and saving...' (white)
+    put 'dark' into ^.data.theme
+    tell ^.file to save (^.data)
+
+    # A fresh load shows the new value came from the file.
+    put 'nothing' into ^.data.theme
+    tell ^.file to load (^.data)
+    show 'theme after reload: ' + ^.data.theme
+
+    show 'Restoring theme to light.' (white)
+    put 'light' into ^.data.theme
+    tell ^.file to save (^.data)
