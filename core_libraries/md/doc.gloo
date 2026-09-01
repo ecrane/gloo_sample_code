@@ -1,0 +1,64 @@
+#
+# gloo-md: work with a Markdown file that has YAML frontmatter.
+#
+#   gloo core_libraries/md/doc.gloo
+#
+# An 'md_doc' object points at a .md file and splits it into:
+#
+#   path          [file]  - the file on disk
+#   frontmatter   [can]   - the --- YAML block, one child per key
+#   body          [text]  - everything after the frontmatter
+#
+# Messages:
+#   read    file  -> frontmatter children + body
+#   write   frontmatter children + body -> file (format preserved)
+#
+load lib md
+
+doc [can] :
+
+  path [string] : core_libraries/md/notes.md
+
+  notes [md_doc] :
+    path [file] :
+    frontmatter [can] :
+      title [string] :
+      status [string] :
+      owner [string] :
+    body [text] :
+
+  on_load [script] :
+    put $.gloo_projects + ^.path into ^.notes.path
+    run doc.read
+    run doc.update_and_restore
+    show 'Done.'
+
+  #
+  # read: split the file into frontmatter fields and body.
+  #
+  read [script] :
+    show 'Frontmatter:' (white)
+    tell doc.notes to read
+    show 'title: ' + ^.notes.frontmatter.title
+    show 'status: ' + ^.notes.frontmatter.status
+    show 'owner: ' + ^.notes.frontmatter.owner
+
+    show 'Body:' (white)
+    show ^.notes.body
+
+  #
+  # write: change one frontmatter field, save, reload to prove it,
+  # then restore so the sample file is unchanged.
+  #
+  update_and_restore [script] :
+    show 'Setting status to review and saving...' (white)
+    put 'review' into ^.notes.frontmatter.status
+    tell doc.notes to write
+
+    put 'nothing' into ^.notes.frontmatter.status
+    tell doc.notes to read
+    show 'status after reload: ' + ^.notes.frontmatter.status
+
+    show 'Restoring status to draft.' (white)
+    put 'draft' into ^.notes.frontmatter.status
+    tell doc.notes to write

@@ -1,0 +1,58 @@
+#
+# gloo-md: render Markdown to HTML.
+#
+#   gloo core_libraries/md/render.gloo
+#
+# A 'markdown' object (short name 'md') holds Markdown text as its
+# value. Messages:
+#
+#   show              print the Markdown to the terminal
+#   render ({dst})    convert to HTML - into {dst} and into 'it'
+#
+# render also understands gloo's Markdown extension blocks:
+#   [!NOTE] [!IDEA] [!CHECK] [!QUOTE] [!PANEL ...]
+#
+load lib md
+
+render [can] :
+
+  doc [markdown] : BEGIN
+# Release 6.3
+
+Highlights:
+
+- inline `load lib`
+- Markdown rendering
+
+| area   | status |
+| ------ | ------ |
+| verbs  | done   |
+| lang   | done   |
+
+[!NOTE]
+Blank lines and `#` headings inside a BEGIN/END block are kept as-is.
+An extension block ends at the next blank line, so leave one after it.
+
+END
+
+  html [text] :
+
+  on_load [script] :
+    run render.to_terminal
+    run render.to_html
+
+  #
+  # 'show' prints the raw Markdown.
+  #
+  to_terminal [script] :
+    show 'Markdown source:' (white)
+    tell render.doc to show
+
+  #
+  # 'render' converts to HTML; the result is in the dst object and
+  # also in 'it'.
+  #
+  to_html [script] :
+    show 'Rendered HTML:' (white)
+    tell render.doc to render (render.html)
+    show render.html
