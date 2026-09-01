@@ -1,0 +1,53 @@
+#
+# gloo-mysql + gloo-db: query a MySQL database.
+#
+# *** NOT RUNNABLE HERE *** - this needs a real MySQL server. The
+# host / username / password below are dummy values; replace them
+# with your own. Loading this file is harmless (on_load doesn't
+# connect); to try it for real, add a 'run people.list_them' call.
+#
+#   gloo core_libraries/mysql/people.gloo
+#
+# Same shape as the gloo-sqlite sample (verb/query works the same way
+# regardless of the connection type) - see core_libraries/sqlite/.
+#
+load lib db
+load lib mysql
+
+people [can] :
+
+  #
+  # mysql: the connection. Same 'database [alias] : ...' + 'query'
+  # pattern as sqlite - only the connection object type changes.
+  #
+  db [mysql] :
+    host : localhost
+    database : my_database
+    username : demo_user
+    password : dummy-password
+
+  list_query [query] :
+    database [alias] : people.db
+    sql : SELECT first, last, phone FROM people ORDER BY last
+    result [can] :
+
+  find_query [query] :
+    database [alias] : people.db
+    sql : SELECT first, last, phone FROM people WHERE last = ?
+    params [can] :
+      last :
+    result [can] :
+
+  on_load [script] :
+    show 'gloo-mysql objects declared (not run - needs a real server):' (white)
+    show '  run people.list_them   - select every row'
+    show '  run people.find_them   - select by last name'
+
+  list_them [script] :
+    run people.list_query
+    list people.list_query.result
+
+  find_them [script] :
+    put 'Crane' into people.find_query.params.last
+    run people.find_query
+    list people.find_query.result

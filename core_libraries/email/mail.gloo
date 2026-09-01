@@ -1,0 +1,61 @@
+#
+# gloo-email: send a message (SMTP) and fetch unseen mail (IMAP).
+#
+# *** NOT RUNNABLE HERE *** - this needs a real mail server and a real
+# account.  The host / username / password below are dummy values;
+# replace them with your own before trying it.  Loading this file is
+# harmless (nothing below actually connects); to try it for real, add
+# a 'run mail.send_it' / 'run mail.fetch_it' call.
+#
+#   gloo core_libraries/email/mail.gloo
+#
+load lib email
+
+mail [can] :
+
+  #
+  # email_smtp: config for sending.  'send' takes the path to an
+  # 'email' message object.
+  #
+  smtp [email_smtp] :
+    server : smtp.example.com
+    port : 587
+    username : demo@example.com
+    password : dummy-password
+
+  #
+  # email: the message itself.
+  #
+  msg [email] :
+    to : someone@example.com
+    from : demo@example.com
+    subject : Hello from gloo
+    body [text] : BEGIN
+A message sent from gloo.
+END
+
+  #
+  # email_imap: config for fetching.  'fetch' logs in, pulls every
+  # unseen message in 'mailbox' into 'messages', then disconnects.
+  #
+  inbox [email_imap] :
+    server : imap.example.com
+    port : 993
+    username : demo@example.com
+    password : dummy-password
+    mailbox : INBOX
+    messages [can] :
+
+  on_load [script] :
+    show 'gloo-email objects declared (not run - needs a real server):' (white)
+    show '  run mail.send_it    - send msg via smtp'
+    show '  run mail.fetch_it   - fetch unseen mail via imap'
+
+  send_it [script] :
+    tell mail.smtp to send ( mail.msg )
+    show 'sent.'
+
+  fetch_it [script] :
+    tell mail.inbox to fetch
+    show 'fetched:'
+    list mail.inbox.messages

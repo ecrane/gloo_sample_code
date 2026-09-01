@@ -1,0 +1,86 @@
+#
+# gloo-test: how a gloo test file is put together.
+#
+#   gloo --test core_libraries/test/example.test.gloo
+#
+# 'gloo --test' auto-loads the test library, then looks for objects of
+# type [test] anywhere in the file (or directory) and runs each one's
+# 'on_test' script.  You don't need 'load lib test' yourself.
+#
+# Shape of a test file:
+#
+#   tests [can] :          any container works - this nesting is a
+#     area [can] :         convention, not a requirement
+#       my_test [test] :
+#         description [string] : shown in output, especially on failure
+#         on_test [script] :
+#           ... set up state, then check it with assert / refute ...
+#
+tests [can] :
+  example [can] :
+
+    #
+    # assert / refute both look at 'it'. assert passes if it is
+    # truthy; refute passes if it is falsy. Most verbs and messages
+    # already leave a boolean in it - here 'check ... for blank?' does.
+    #
+    msg [string] :
+
+    checks_a_message [test] :
+      description [string] : blank? tells us whether a string is empty
+      on_test [script] :
+        check tests.example.msg for blank?
+        assert "expected an empty string to be blank"
+
+        put 'hello' into tests.example.msg
+        check tests.example.msg for blank?
+        refute "expected a non-empty string to not be blank"
+
+    #
+    # Not every result is already a boolean.  'eval' evaluates any
+    # expression into 'it', which is exactly what assert/refute need -
+    # this is the bridge for comparisons and arbitrary expressions.
+    #
+    checks_a_value [test] :
+      description [string] : eval bridges a comparison into it for assert
+      on_test [script] :
+        put 2 + 2 into tests.example.msg
+        eval tests.example.msg = 4
+        assert "expected 2 + 2 to equal 4"
+
+        eval tests.example.msg = 5
+        refute "expected 2 + 2 to not equal 5"
+
+    #
+    # A test with no assertions at all still needs one - 'noop' (the
+    # bare eval shortcut) sets it to true, for a test that's really
+    # checking "this ran without error".
+    #
+    runs_without_error [test] :
+      description [string] : a script that just needs to not blow up
+      on_test [script] :
+        put 'ok' into tests.example.msg
+        noop
+        assert "expected the setup above to have run cleanly"
+
+    #
+    # Paths inside ( ) message parameters must be absolute - a ^ or ^^
+    # reference doesn't resolve there. Elsewhere in a test, ^ / ^^ are
+    # fine.
+    #
+    # Tests in a file share whatever objects they reference - 'msg'
+    # above is one object, reused by every test.  Each test sets it
+    # before checking it, rather than assuming what an earlier test
+    # left behind: order between tests isn't guaranteed.
+    absolute_paths_in_params [test] :
+      description [string] : ^ refs don't resolve inside ( ) params
+      on_test [script] :
+        put 'ok' into tests.example.msg
+
+        # this works - ^^ as the message target
+        check ^^.msg for blank?
+        refute "expected msg to hold a value"
+
+        # inside ( ), use the full path instead of ^^.msg
+        check tests.example.msg for substring? ( "ok" )
+        assert "expected msg to contain 'ok'"
