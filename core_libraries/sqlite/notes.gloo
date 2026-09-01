@@ -1,0 +1,87 @@
+#
+# gloo-sqlite + gloo-db: create a table, add rows, query them.
+#
+#   gloo core_libraries/sqlite/notes.gloo
+#
+# gloo-db provides the 'query' object (any SQL statement); gloo-sqlite
+# provides the 'sqlite' connection object.  A 'query' points at a
+# connection through a 'database [alias]' child.
+#
+# This sample builds a scratch database, runs a few queries against
+# it, and deletes the file at the end.
+#
+load lib db
+load lib sqlite
+
+notes [can] :
+
+  path [string] : core_libraries/sqlite/scratch.db
+
+  # The connection.  'database' is the path to the .db file (created
+  # on first open).
+  conn [sqlite] :
+    database :
+
+  # The scratch file, so we can delete it when we're done.
+  file [file] :
+
+  #
+  # Each query: a SQL string + an alias to the connection.  A SELECT
+  # with a 'result' container fills it with one child per row.
+  #
+  create_table [query] :
+    database [alias] : notes.conn
+    sql : CREATE TABLE IF NOT EXISTS notes ( id INTEGER PRIMARY KEY, title TEXT, done INTEGER )
+
+  clear_table [query] :
+    database [alias] : notes.conn
+    sql : DELETE FROM notes
+
+  add_note [query] :
+    database [alias] : notes.conn
+    sql : INSERT INTO notes ( title, done ) VALUES ( ?, ? )
+    params [can] :
+      title :
+      done :
+
+  open_notes [query] :
+    database [alias] : notes.conn
+    sql : SELECT id, title FROM notes WHERE done = 0
+    result [can] :
+
+  on_load [script] :
+    put $.gloo_projects + ^.path into ^.conn.database
+    put ^.conn.database into ^.file
+
+    run notes.create_table
+    run notes.clear_table
+
+    run notes.insert_rows
+    run notes.list_open
+
+    tell notes.file to delete
+    show 'Done.'
+
+  #
+  # INSERT with parameters: set the params, then run.
+  #
+  insert_rows [script] :
+    put 'write the sample' into notes.add_note.params.title
+    put 0 into notes.add_note.params.done
+    run notes.add_note
+
+    put 'ship it' into notes.add_note.params.title
+    put 1 into notes.add_note.params.done
+    run notes.add_note
+
+  #
+  # SELECT into a result container.  'result' gets one child per row,
+  # each row a container with one child per selected column.
+  #
+  list_open [script] :
+    run notes.open_notes
+    show 'Open notes (one row per child):' (white)
+    list notes.open_notes.result
+
+    show 'The first row, first column:' (white)
+    show notes.open_notes.result.0.title
