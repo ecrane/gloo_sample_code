@@ -1,0 +1,29 @@
+#
+# The shell object.  Loaded by start.gloo (which does 'load lib cli').
+#
+# A 'shell' is an interactive command REPL.  Commands are added to it
+# with 'tell {command} to register (shell)'.  These optional child
+# scripts hook into its lifecycle.
+#
+shell [shell] :
+
+  prompt [string] : demo >
+
+  # Add a built-in 'quit' command.
+  include_quit [boolean] : true
+
+  # Run when the user presses RETURN on an empty line.
+  on_empty_command [script] :
+    show 'Type a command, or "help" to list them.'
+
+  # Run when the input matches no command.  Without this, the shell
+  # prints its own "Unknown command".
+  on_unknown_command [script] :
+    show 'No such command - try "help".'
+
+  # Run before and after every command's action.
+  before_action [script] :
+    show '...'
+
+  after_action [script] :
+    show 'ok'

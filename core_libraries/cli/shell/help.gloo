@@ -1,0 +1,13 @@
+#
+# The shell has no built-in command list, so an app usually provides
+# its own 'help'.
+#
+help [command] :
+  description [string] : List the commands
+  action [script] :
+    show 'Commands:'
+    show '  hello    say hello'
+    show '  now      show the date and time'
+    show '  colors   choose a color (has sub-commands)'
+    show '  help     this list'
+    show '  quit     leave'

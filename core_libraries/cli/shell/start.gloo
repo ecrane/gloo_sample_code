@@ -1,0 +1,34 @@
+#
+# gloo-cli: a small interactive shell app.
+#
+# Run it as a gloo app, so it loads on its own and command-line
+# arguments aren't mistaken for shell commands:
+#
+#   gloo --app core_libraries/cli/shell
+#
+# At the prompt, try:  hello   now   colors   help   quit
+#
+# Each piece is in its own file: the shell object in shell.gloo,
+# one command per file (hello.gloo, now.gloo, colors.gloo).
+#
+load lib cli
+
+start [can] :
+
+  on_load [script] :
+    load shell
+    load hello
+    load now
+    load colors
+    load help
+
+    # Each command registers itself with the shell by name.
+    tell hello to register (shell)
+    tell now to register (shell)
+    tell colors to register (shell)
+    tell help to register (shell)
+
+    # Hand control to the shell's REPL.  When the user quits, we
+    # return here and shut gloo down.
+    tell shell to start
+    quit

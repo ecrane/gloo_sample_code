@@ -1,0 +1,26 @@
+#
+# A command with sub-commands.  A 'nodes' container holds child
+# 'command' objects, each with its own action.  At the prompt:
+#
+#   colors        - the shell lists the sub-commands
+#   red           - runs the 'red' sub-command's action
+#
+# (The sub-command pick is an interactive menu, so this one only
+# works in a real terminal, not with piped input.)
+#
+colors [command] :
+  description [string] : Choose a color
+
+  nodes [can] :
+    red [command] :
+      description [string] : the warm one
+      action [script] :
+        show 'you chose red'
+    green [command] :
+      description [string] : the calm one
+      action [script] :
+        show 'you chose green'
+    blue [command] :
+      description [string] : the cool one
+      action [script] :
+        show 'you chose blue'

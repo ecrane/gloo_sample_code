@@ -1,0 +1,39 @@
+#
+# gloo-cli: the colorize object.
+#
+#   gloo core_libraries/cli/colorize.gloo
+#
+# 'colorize' (short 'color') builds a single line of text from several
+# coloured pieces.  Each child's NAME is a colour and its VALUE is the
+# text to print in that colour.  'run' prints the assembled line and
+# also puts it in 'it'.
+#
+# (For a single colour, the built-in 'show text (colour)' is simpler -
+# see verb/show.gloo.  Use colorize when one line mixes colours.)
+#
+load lib cli
+
+colorize [can] :
+
+  # A build-status line: green label, plain detail.
+  status [colorize] :
+    green : PASS
+    default :  - 42 tests, 0 failures
+
+  # A prompt-style line mixing three colours.
+  banner [colorize] :
+    cyan : gloo
+    default :  ready in
+    yellow :  1.2s
+
+  captured [string] :
+
+  on_load [script] :
+    run colorize.status
+
+    run colorize.banner
+
+    show 'The assembled line is also in it:' (white)
+    run colorize.status
+    put it into colorize.captured
+    show colorize.captured

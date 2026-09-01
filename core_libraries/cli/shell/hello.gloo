@@ -1,0 +1,7 @@
+#
+# A plain command: a name, a description, and an action script.
+#
+hello [command] :
+  description [string] : Say hello
+  action [script] :
+    show 'Hello from the gloo shell!'

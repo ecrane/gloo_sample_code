@@ -1,0 +1,10 @@
+#
+# Another plain command.  The action is a normal gloo script, so it
+# can do anything - here it reads the current date and time.
+#
+now [command] :
+  description [string] : Show the current date and time
+  when [datetime] :
+  action [script] :
+    tell now.when to now
+    show now.when

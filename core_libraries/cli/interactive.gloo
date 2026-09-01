@@ -1,0 +1,88 @@
+#
+# gloo-cli: interactive objects (prompt / select / confirm / menu).
+#
+#   gloo core_libraries/cli/interactive.gloo
+#
+# These objects read from the keyboard, so they can't run
+# unattended.  Loading this file is harmless - on_load just prints a
+# summary.  To try one, run its script yourself:
+#
+#   > run interactive.ask_name
+#   > run interactive.pick_color
+#   > run interactive.confirm_it
+#   > run interactive.show_menu
+#
+load lib cli
+
+interactive [can] :
+
+  #
+  # prompt  (type 'ask', short for prompt) - a free-text question.
+  # 'run' asks 'prompt' and puts the answer in 'result'.
+  #
+  who [ask] :
+    prompt [string] : What is your name?
+    result [string] :
+
+  ask_name [script] :
+    run interactive.who
+    show 'Hello, ' + interactive.who.result
+
+  #
+  # select - choose one option.  Children of 'options' are the
+  # choices (name shown, value returned); the choice lands in 'result'.
+  #
+  color [select] :
+    prompt [string] : Pick a color
+    options [can] :
+      red : r
+      green : g
+      blue : b
+    result [string] :
+
+  pick_color [script] :
+    run interactive.color
+    show 'You picked: ' + interactive.color.result
+
+  #
+  # confirm - a yes/no question.  'result' is a boolean.
+  #
+  go_ahead [confirm] :
+    prompt [string] : Deploy now?
+    result [boolean] :
+
+  confirm_it [script] :
+    run ^.go_ahead
+    if ^.go_ahead.result then show 'deploying'
+    unless ^.go_ahead.result do show 'cancelled'
+
+  #
+  # menu - a titled list of items, each a 'menu_item' (short 'mitem')
+  # with its own 'do' script.  Set 'loop' true to keep showing the
+  # menu until something sets it false.
+  #
+  main [menu] :
+    title [string] : Sample Menu
+    prompt [string] : >
+    loop [bool] : true
+    items [can] :
+      hi [mitem] :
+        shortcut [str] : hi
+        description [str] : Say hello
+        do [script] :
+          show 'hello!'
+      q [mitem] :
+        shortcut [str] : q
+        description [str] : Quit
+        do [script] :
+          put false into interactive.main.loop
+
+  show_menu [script] :
+    run interactive.main
+
+  on_load [script] :
+    show 'gloo-cli interactive objects (not run here):' (white)
+    show '  run interactive.ask_name     - a text prompt'
+    show '  run interactive.pick_color   - a single-choice select'
+    show '  run interactive.confirm_it   - a yes/no confirm'
+    show '  run interactive.show_menu    - a looping menu'
