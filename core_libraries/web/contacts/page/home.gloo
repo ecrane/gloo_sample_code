@@ -1,0 +1,99 @@
+#
+# Home dashboard: totals, the next few birthdays, and recent notes.
+#
+page [can] :
+  home [page] :
+
+    params [can] :
+      people_count [string] :
+      notes_count [string] :
+
+    #
+    # Fill the counts before the page renders. The single-row result
+    # maps onto the params above by column name; the body reads them
+    # through ERB.
+    #
+    on_prerender [script] :
+      run page.home.counts
+
+    counts [query] :
+      database [alias] : data.conn
+      sql : BEGIN
+        SELECT
+          ( SELECT count(*) FROM people ) AS people_count,
+          ( SELECT count(*) FROM notes )  AS notes_count
+        END
+      result [can] :
+        people_count [alias] : page.home.params.people_count
+        notes_count [alias] : page.home.params.notes_count
+
+    #
+    # Each table points 'data' at a query, which runs when the table
+    # renders. Only columns named under 'headers' are shown; 'cells'
+    # gives a column an HTML template (row values are in scope).
+    #
+    bdays_q [query] :
+      database [alias] : data.conn
+      sql : BEGIN
+        SELECT id, name,
+          strftime('%m-%d', dob) AS on_date,
+          CAST( julianday(
+            CASE WHEN strftime('%m-%d', dob) >= strftime('%m-%d','now','localtime')
+                 THEN strftime('%Y','now','localtime') || '-' || strftime('%m-%d', dob)
+                 ELSE ( strftime('%Y','now','localtime') + 1 ) || '-' || strftime('%m-%d', dob) END
+          ) - julianday('now','localtime','start of day') AS INTEGER ) AS days_away
+        FROM people
+        WHERE dob IS NOT NULL AND dob <> ''
+        ORDER BY days_away
+        LIMIT 5
+        END
+
+    bdays_tbl [tbl] :
+      styles [alias] : tbl_styles
+      always_rows [boolean] : true
+      headers [can] :
+        name : Name
+        on_date : Birthday
+        days_away : Days away
+      cells [can] :
+        name : <%= link name, "/people/#{id}" %>
+      data [alias] : page.home.bdays_q
+
+    recent_q [query] :
+      database [alias] : data.conn
+      sql : BEGIN
+        SELECT n.id, n.person_id, p.name,
+          strftime('%Y.%m.%d', n.contacted_at) AS on_date,
+          coalesce( nullif(n.title,''), substr(n.body,1,60) ) AS summary
+        FROM notes n
+        JOIN people p ON p.id = n.person_id
+        ORDER BY n.contacted_at DESC, n.id DESC
+        LIMIT 6
+        END
+
+    recent_tbl [tbl] :
+      styles [alias] : tbl_styles
+      headers [can] :
+        on_date : When
+        name : Person
+        summary : Note
+      cells [can] :
+        name : <%= link name, "/people/#{person_id}" %>
+        summary : <%= link summary, "/notes/#{id}" %>
+      data [alias] : page.home.recent_q
+
+    head [can] :
+      content [can] :
+        title [e] : Contacts
+
+    body [e] :
+      content [can] :
+        main [text] : BEGIN
+<h2 class="h3 border-bottom pb-2 mb-4">Contacts</h2>
+<p class="text-muted"><%= people_count %> people &middot; <%= notes_count %> notes</p>
+<h3 class="h5 mt-4">Upcoming birthdays</h3>
+END
+        bdays [alias] : page.home.bdays_tbl
+
+        mid [text] : <h3 class="h5 mt-4">Recent notes</h3>
+        recent [alias] : page.home.recent_tbl

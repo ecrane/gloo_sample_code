@@ -1,0 +1,22 @@
+#
+# Shown for any route that doesn't resolve.
+#
+
+page [can] :
+  err [page] :
+
+    return_code [int] : 404
+
+    head [e] :
+      content [can] :
+        title [e] : Not Found
+
+    body [e] :
+      content [can] :
+        main [text] : BEGIN
+<div class="py-5 text-center">
+  <h2>Not found</h2>
+  <p class="text-muted">That page doesn't exist.</p>
+  <a href="/" class="btn btn-primary">Go home</a>
+</div>
+END

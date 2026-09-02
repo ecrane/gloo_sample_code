@@ -1,0 +1,49 @@
+#
+# New person form.
+#
+# Route: GET /people/new   ->   posts to /people   (create)
+#
+page [can] :
+  people [can] :
+    new [page] :
+
+      head [can] :
+        content [can] :
+          title [e] : Add person
+
+      body [e] :
+        content [can] :
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/person.png" width="40" height="40" class="me-2" />
+  <h2 class="h3 mb-0">Add person</h2>
+</div>
+END
+
+          f [form] :
+            name [string] : person_form
+            action [string] : /people
+            method [string] : post
+            cancel_path [string] : /people/
+            styles [alias] : form_styles
+            content [can] :
+              name [field] :
+                label [string] : Name
+                type [string] : text
+                autofocus [boolean] : true
+                placeholder [string] : Full name
+              dob [field] :
+                label [string] : Birthday
+                type [string] : text
+                placeholder [string] : YYYY-MM-DD
+                description [string] : Optional. Format: YYYY-MM-DD
+              pinned [field] :
+                label [string] : Pin to dashboard
+                type [string] : checkbox
+                description [string] : Pinned
+                checked [boolean] : false
+              bio [field] :
+                label [string] : Notes
+                type [string] : textarea
+                rows [string] : 6
+                description [string] : Optional. Markdown is supported.

@@ -1,0 +1,12 @@
+#
+# CSS classes applied to rendered [form] and [field] objects.
+# Referenced by forms as: styles [alias] : form_styles
+#
+
+form_styles [can] :
+  form [string] :
+  submit [string] : btn btn-primary
+  cancel [string] : btn btn-link
+  field_group [string] : mb-3
+  field_label [string] : form-label
+  field_control [string] : form-control

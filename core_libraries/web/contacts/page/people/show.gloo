@@ -1,0 +1,96 @@
+#
+# Person detail: header facts, bio, the person's notes, and an inline
+# "add note" form.
+#
+# Route: GET /people/{id}
+#
+page [can] :
+  people [can] :
+    show [page] :
+
+      params [can] :
+        id [int] :
+        name [string] :
+        dob [string] :
+        birthday [string] :
+        age [string] :
+        pinned [bool] :
+        bio [string] :
+
+      on_prerender [script] :
+        put ^.params.id into ^.get.params.id
+        run ^.get
+
+        check ^.get.result.id for blank?
+        if it then go page.err
+
+        put ^.params.name into ^.head.content.title
+        put ^.params.id into page.people._add_note.params.person_id
+
+      get [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT id, name, dob, pinned, bio,
+            strftime('%m.%d', dob) AS birthday,
+            CASE WHEN dob IS NULL OR dob = '' THEN ''
+                 ELSE strftime('%Y','now') - strftime('%Y',dob)
+                      - ( strftime('%m-%d','now') < strftime('%m-%d',dob) )
+            END AS age
+          FROM people
+          WHERE id = ?
+          END
+        params [can] :
+          id [int] :
+        result [can] :
+          id [int] :
+          name [alias] : page.people.show.params.name
+          dob [alias] : page.people.show.params.dob
+          pinned [alias] : page.people.show.params.pinned
+          bio [alias] : page.people.show.params.bio
+          birthday [alias] : page.people.show.params.birthday
+          age [alias] : page.people.show.params.age
+
+      head [can] :
+        content [can] :
+          title [e] : Person
+
+      body [e] :
+        content [can] :
+
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/person.png" width="40" height="40" class="me-2" />
+  <h2 class="h3 mb-0"><%= name %></h2>
+  <span class="ms-auto">
+    <%= link 'Edit', "/people/#{id}/edit", 'btn btn-sm btn-outline-secondary' %>
+  </span>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <dl class="row">
+      <dt class="col-5">Birthday</dt>
+      <dd class="col-7"><%= birthday.empty? ? '&mdash;' : birthday %></dd>
+      <dt class="col-5">Age</dt>
+      <dd class="col-7"><%= age.to_s.empty? ? '&mdash;' : age %></dd>
+      <dt class="col-5">Pinned</dt>
+      <dd class="col-7"><%= yes_no pinned %></dd>
+    </dl>
+    <div class="bio"><%= render_md bio %></div>
+    <form method="post" action="/people/<%= id %>/delete"
+      onsubmit="return confirm('Delete <%= name %> and all their notes?')">
+      <button class="btn btn-sm btn-link text-danger px-0">Delete person</button>
+    </form>
+  </div>
+
+  <div class="col-md-8">
+    <h3 class="h5">Notes</h3>
+END
+
+          add_note [alias] : page.people._add_note
+          notes [alias] : page.people._notes
+
+          main_close [text] : BEGIN
+  </div>
+</div>
+END

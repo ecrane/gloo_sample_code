@@ -1,0 +1,19 @@
+#
+# Startup banner, shown once the server is listening.
+#
+
+info [can] :
+
+  show [script] :
+    wait 1            # give the server a moment to come up
+    show ''
+    show info.msg (white)
+
+  msg [text] : BEGIN
+
+  Contacts
+  Running on http://localhost:8095/
+
+  Enter 'q' at the prompt to stop the server.
+
+  END

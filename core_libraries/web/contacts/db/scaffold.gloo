@@ -1,0 +1,221 @@
+#
+# Build the Contacts database: create the tables and load sample data.
+#
+#   gloo core_libraries/web/contacts/db/scaffold.gloo
+#
+# Run it from the repo root (the path above is relative to the working
+# directory). Safe to run again - it drops and rebuilds every table,
+# which is a handy way to reset the app to a known state.
+#
+# This is a plain script (SCRIPT mode): it runs top to bottom and
+# quits. The app itself uses the same connection object - see
+# data/db.gloo.
+#
+load lib db
+load lib sqlite
+
+scaffold [can] :
+
+  #
+  # The connection. A relative path, resolved against the working
+  # directory - the same file the running app opens.
+  #
+  conn [sqlite] :
+    database : core_libraries/web/contacts/data/contacts.db
+
+  # -------------------------------------------------------------------
+  #   Schema
+  # -------------------------------------------------------------------
+
+  drop_notes [query] :
+    database [alias] : scaffold.conn
+    sql : DROP TABLE IF EXISTS notes
+
+  drop_people [query] :
+    database [alias] : scaffold.conn
+    sql : DROP TABLE IF EXISTS people
+
+  create_people [query] :
+    database [alias] : scaffold.conn
+    sql : BEGIN
+      CREATE TABLE people (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        name       TEXT    NOT NULL,
+        dob        TEXT,
+        pinned     INTEGER NOT NULL DEFAULT 0,
+        bio        TEXT,
+        created_at TEXT    NOT NULL,
+        updated_at TEXT    NOT NULL
+      )
+      END
+
+  create_notes [query] :
+    database [alias] : scaffold.conn
+    sql : BEGIN
+      CREATE TABLE notes (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        person_id    INTEGER NOT NULL,
+        title        TEXT,
+        body         TEXT    NOT NULL,
+        contacted_at TEXT    NOT NULL,
+        created_at   TEXT    NOT NULL,
+        updated_at   TEXT    NOT NULL
+      )
+      END
+
+  # -------------------------------------------------------------------
+  #   Sample data
+  # -------------------------------------------------------------------
+
+  #
+  # One parameterized INSERT, reused for every row. dob is a
+  # 'YYYY-MM-DD' string (or blank for unknown). created_at / updated_at
+  # are set in SQL with datetime('now').
+  #
+  add_person [query] :
+    database [alias] : scaffold.conn
+    sql : BEGIN
+      INSERT INTO people ( name, dob, pinned, bio, created_at, updated_at )
+      VALUES ( ?, ?, ?, ?, datetime('now'), datetime('now') )
+      END
+    params [can] :
+      name [string] :
+      dob [string] :
+      pinned [int] :
+      bio [string] :
+
+  add_note [query] :
+    database [alias] : scaffold.conn
+    sql : BEGIN
+      INSERT INTO notes ( person_id, title, body, contacted_at, created_at, updated_at )
+      VALUES ( ?, ?, ?, ?, datetime('now'), datetime('now') )
+      END
+    params [can] :
+      person_id [int] :
+      title [string] :
+      body [string] :
+      contacted_at [string] :
+
+  # -------------------------------------------------------------------
+  #   Run everything
+  # -------------------------------------------------------------------
+
+  on_load [script] :
+    show 'Building the Contacts database…' (white)
+
+    run scaffold.drop_notes
+    run scaffold.drop_people
+    run scaffold.create_people
+    run scaffold.create_notes
+
+    run scaffold.seed_people
+    run scaffold.seed_notes
+
+    show 'Done. Database ready at ' + scaffold.conn.database (green)
+
+  #
+  # A person is added by setting the params and running add_person.
+  # 'pinned' people show on the home dashboard.
+  #
+  seed_people [script] :
+    put 'Ada Lovelace'   into scaffold.add_person.params.name
+    put '1990-09-05'      into scaffold.add_person.params.dob
+    put 1                 into scaffold.add_person.params.pinned
+    put 'Met at the analytics conference. Interested in **early collaboration** on the reporting project.' into scaffold.add_person.params.bio
+    run scaffold.add_person
+
+    put 'Grace Hopper'    into scaffold.add_person.params.name
+    put '1985-09-09'      into scaffold.add_person.params.dob
+    put 1                 into scaffold.add_person.params.pinned
+    put 'Introduced by a mutual contact. Runs the platform team.' into scaffold.add_person.params.bio
+    run scaffold.add_person
+
+    put 'Alan Turing'     into scaffold.add_person.params.name
+    put '1992-06-23'      into scaffold.add_person.params.dob
+    put 0                 into scaffold.add_person.params.pinned
+    put 'Prefers email over calls. Deep on infrastructure questions.' into scaffold.add_person.params.bio
+    run scaffold.add_person
+
+    put 'Katherine Johnson' into scaffold.add_person.params.name
+    put '1988-08-26'      into scaffold.add_person.params.dob
+    put 0                 into scaffold.add_person.params.pinned
+    put 'Very responsive. Good person to ask for an introduction.' into scaffold.add_person.params.bio
+    run scaffold.add_person
+
+    put 'Dennis Ritchie'  into scaffold.add_person.params.name
+    put ''                into scaffold.add_person.params.dob
+    put 0                 into scaffold.add_person.params.pinned
+    put 'Birthday unknown. Reconnected at a meetup after a few years.' into scaffold.add_person.params.bio
+    run scaffold.add_person
+
+    put 'Radia Perlman'   into scaffold.add_person.params.name
+    put '1991-09-15'      into scaffold.add_person.params.dob
+    put 0                 into scaffold.add_person.params.pinned
+    put '' into scaffold.add_person.params.bio
+    run scaffold.add_person
+
+  #
+  # Notes are attached to a person by id (the order people are
+  # inserted above: 1 Ada, 2 Grace, 3 Alan, 4 Katherine, 5 Dennis,
+  # 6 Radia).
+  #
+  seed_notes [script] :
+    put 1 into scaffold.add_note.params.person_id
+    put 'Kickoff call' into scaffold.add_note.params.title
+    put 'Walked through the reporting project scope. She will send a list of the metrics that matter most to her team.' into scaffold.add_note.params.body
+    put '2026-07-14' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 1 into scaffold.add_note.params.person_id
+    put 'Follow-up' into scaffold.add_note.params.title
+    put 'Got the metrics list. Two of them need data we do not collect yet - flagged for the platform team.' into scaffold.add_note.params.body
+    put '2026-08-02' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 1 into scaffold.add_note.params.person_id
+    put '' into scaffold.add_note.params.title
+    put 'Quick hallway chat at the conference. Still keen. Will introduce me to Grace on the platform side.' into scaffold.add_note.params.body
+    put '2026-08-21' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 2 into scaffold.add_note.params.person_id
+    put 'Intro from Ada' into scaffold.add_note.params.title
+    put 'Ada connected us over email. Grace owns the data pipeline we would need changes to.' into scaffold.add_note.params.body
+    put '2026-08-22' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 2 into scaffold.add_note.params.person_id
+    put 'Scoping the pipeline work' into scaffold.add_note.params.title
+    put 'Two new fields. She thinks it is a small change but wants it in next quarter planning. Send a one-pager.' into scaffold.add_note.params.body
+    put '2026-08-28' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 3 into scaffold.add_note.params.person_id
+    put 'Infra review' into scaffold.add_note.params.title
+    put 'Reviewed the deployment plan. He is worried about the migration window - suggested a read-only cutover.' into scaffold.add_note.params.body
+    put '2026-06-30' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 3 into scaffold.add_note.params.person_id
+    put '' into scaffold.add_note.params.title
+    put 'Emailed the revised plan with the read-only window. No response yet.' into scaffold.add_note.params.body
+    put '2026-08-11' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 4 into scaffold.add_note.params.person_id
+    put 'Coffee' into scaffold.add_note.params.title
+    put 'Caught up on the org changes. She offered to introduce me to the new analytics lead.' into scaffold.add_note.params.body
+    put '2026-08-19' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 5 into scaffold.add_note.params.person_id
+    put 'Reconnected' into scaffold.add_note.params.title
+    put 'Ran into Dennis at the local meetup. He moved teams last year. Good to have the contact again.' into scaffold.add_note.params.body
+    put '2026-08-25' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note
+
+    put 6 into scaffold.add_note.params.person_id
+    put 'Networking protocols question' into scaffold.add_note.params.title
+    put 'Asked her about the routing design. She pointed me at a paper and offered to review our approach.' into scaffold.add_note.params.body
+    put '2026-08-30' into scaffold.add_note.params.contacted_at
+    run scaffold.add_note

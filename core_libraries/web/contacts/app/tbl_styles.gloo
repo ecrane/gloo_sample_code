@@ -1,0 +1,11 @@
+#
+# CSS classes applied to rendered [tbl] tables.
+#
+
+tbl_styles [can] :
+  table [string] : table table-sm table-striped table-hover align-middle
+  thead [string] : thead
+  header [string] : text-start
+  head_cell [string] : text-start
+  cell [string] :
+  row [string] :

@@ -1,0 +1,49 @@
+#
+# Everyone with a birthday on file, ordered by how soon it is.
+#
+# Route: GET /people/bdays
+#
+page [can] :
+  people [can] :
+    bdays [page] :
+
+      q [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT id, name,
+            strftime('%m-%d', dob) AS on_date,
+            CAST( julianday(
+              CASE WHEN strftime('%m-%d', dob) >= strftime('%m-%d','now','localtime')
+                   THEN strftime('%Y','now','localtime') || '-' || strftime('%m-%d', dob)
+                   ELSE ( strftime('%Y','now','localtime') + 1 ) || '-' || strftime('%m-%d', dob) END
+            ) - julianday('now','localtime','start of day') AS INTEGER ) AS days_away
+          FROM people
+          WHERE dob IS NOT NULL AND dob <> ''
+          ORDER BY days_away
+          END
+
+      tbl [tbl] :
+        styles [alias] : tbl_styles
+        always_rows [boolean] : true
+        headers [can] :
+          name : Name
+          on_date : Birthday
+          days_away : Days away
+        cells [can] :
+          name : <%= link name, "/people/#{id}" %>
+          days_away : <span class="days-away"><%= days_away %></span>
+        data [alias] : page.people.bdays.q
+
+      head [can] :
+        content [can] :
+          title [e] : Birthdays
+
+      body [e] :
+        content [can] :
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/bday.png" width="40" height="40" class="me-2" />
+  <h2 class="h3 mb-0">Upcoming birthdays</h2>
+</div>
+END
+          tbl [alias] : page.people.bdays.tbl

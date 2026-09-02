@@ -1,0 +1,70 @@
+#
+# A single note.
+#
+# Route: GET /notes/{id}
+#
+page [can] :
+  notes [can] :
+    show [page] :
+
+      params [can] :
+        id [int] :
+        person_id [int] :
+        name [string] :
+        title [string] :
+        body [string] :
+        on_date [string] :
+
+      on_prerender [script] :
+        put ^.params.id into ^.get.params.id
+        run ^.get
+
+        check ^.get.result.id for blank?
+        if it then go page.err
+
+      get [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT n.id, n.person_id, p.name, n.title, n.body,
+            strftime('%Y.%m.%d', n.contacted_at) AS on_date
+          FROM notes n
+          JOIN people p ON p.id = n.person_id
+          WHERE n.id = ?
+          END
+        params [can] :
+          id [int] :
+        result [can] :
+          id [int] :
+          person_id [alias] : page.notes.show.params.person_id
+          name [alias] : page.notes.show.params.name
+          title [alias] : page.notes.show.params.title
+          body [alias] : page.notes.show.params.body
+          on_date [alias] : page.notes.show.params.on_date
+
+      head [can] :
+        content [can] :
+          title [e] : Note
+
+      body [e] :
+        content [can] :
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/note.png" width="40" height="40" class="me-2" />
+  <div>
+    <h2 class="h3 mb-0"><%= title.to_s.empty? ? 'Note' : title %></h2>
+    <div class="text-muted">
+      <%= on_date %> &middot; <%= link name, "/people/#{person_id}" %>
+    </div>
+  </div>
+  <span class="ms-auto">
+    <%= link 'Edit', "/notes/#{id}/edit", 'btn btn-sm btn-outline-secondary' %>
+  </span>
+</div>
+
+<div><%= render_md body %></div>
+
+<form method="post" action="/notes/<%= id %>/delete" class="mt-4"
+  onsubmit="return confirm('Delete this note?')">
+  <button class="btn btn-sm btn-link text-danger px-0">Delete note</button>
+</form>
+END

@@ -1,0 +1,44 @@
+#
+# Create a person from the new-person form, then redirect to the
+# detail page.
+#
+# Route: POST /people
+#
+page [can] :
+  people [can] :
+    create [page] :
+
+      params [can] :
+        name [string] :
+        dob [string] :
+        pinned [string] :
+        bio [text] :
+        pinned_int [int] : 0
+        new_id [int] :
+
+      #
+      # RETURNING gives us the new id back on the same connection -
+      # last_insert_rowid() would not, because every query opens its
+      # own connection.
+      #
+      write [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          INSERT INTO people ( name, dob, pinned, bio, created_at, updated_at )
+          VALUES ( ?, ?, ?, ?, datetime('now'), datetime('now') )
+          RETURNING id
+          END
+        params [can] :
+          name [alias] : page.people.create.params.name
+          dob [alias] : page.people.create.params.dob
+          pinned [alias] : page.people.create.params.pinned_int
+          bio [alias] : page.people.create.params.bio
+        result [can] :
+          id [alias] : page.people.create.params.new_id
+
+      on_render [script] :
+        put 0 into ^.params.pinned_int
+        if ^.params.pinned = 'true' then put 1 into ^.params.pinned_int
+
+        run ^.write
+        go '/people/' + ^.params.new_id (hard)

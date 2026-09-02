@@ -1,0 +1,87 @@
+#
+# People list, with an optional name search.
+#
+# Route: GET /people/   (?search=... optional)
+#
+page [can] :
+  people [can] :
+    index [page] :
+
+      params [can] :
+        search [string] :
+
+      #
+      # Pick which query feeds the table based on whether a search
+      # term was given. 'data*' sets the alias target by path.
+      #
+      on_prerender [script] :
+        check ^.params.search for blank?
+        if it \
+          then put 'page.people.index.all_q' into ^.tbl.data* \
+          else run ^.setup_search
+
+      setup_search [script] :
+        put '%' + page.people.index.params.search + '%' into page.people.index.search_q.params.term
+        put 'page.people.index.search_q' into page.people.index.tbl.data*
+
+      all_q [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT p.id, p.name,
+            strftime('%m.%d', p.dob) AS birthday,
+            ( SELECT max(contacted_at) FROM notes n WHERE n.person_id = p.id ) AS last_note,
+            ( SELECT count(*) FROM notes n WHERE n.person_id = p.id ) AS notes
+          FROM people p
+          ORDER BY p.name
+          END
+
+      search_q [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT p.id, p.name,
+            strftime('%m.%d', p.dob) AS birthday,
+            ( SELECT max(contacted_at) FROM notes n WHERE n.person_id = p.id ) AS last_note,
+            ( SELECT count(*) FROM notes n WHERE n.person_id = p.id ) AS notes
+          FROM people p
+          WHERE lower(p.name) LIKE lower(?)
+          ORDER BY p.name
+          END
+        params [can] :
+          term [string] :
+
+      tbl [tbl] :
+        styles [alias] : tbl_styles
+        always_rows [boolean] : true
+        headers [can] :
+          name : Name
+          birthday : Birthday
+          last_note : Last note
+          notes : Notes
+        cells [can] :
+          name : <%= link name, "/people/#{id}" %>
+        data [alias] : page.people.index.all_q
+
+      head [can] :
+        content [can] :
+          title [e] : People
+
+      body [e] :
+        content [can] :
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/people.png" width="40" height="40" class="me-2" />
+  <h2 class="h3 mb-0">People</h2>
+  <a href="/people/new" class="btn btn-sm btn-primary ms-auto">Add person</a>
+</div>
+
+<form class="row g-2 mb-4" method="get" action="/people/">
+  <div class="col-auto">
+    <input type="search" name="search" class="form-control" placeholder="Search by name"
+      value="<%= search %>">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary" type="submit">Search</button>
+  </div>
+</form>
+END
+          tbl [alias] : page.people.index.tbl

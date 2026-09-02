@@ -1,0 +1,60 @@
+#
+# Contacts - a small CRM web app built on gloo-web.
+#
+# A worked example of the same structure the real gloo apps use
+# (start.gloo at the root, one folder per kind of artifact), trimmed
+# down to a single tenant with two entities: people and notes.
+#
+# --- First run -------------------------------------------------------
+#
+# Build the database (creates data/contacts.db, tables, sample data):
+#
+#   gloo core_libraries/web/contacts/db/scaffold.gloo
+#
+# Then start the app:
+#
+#   gloo --app <full path to>/core_libraries/web/contacts
+#
+# The app runs at http://localhost:8095/ - enter 'q' at the prompt to
+# stop it.
+#
+start [container] :
+  msg [str] : Contacts
+
+  on_load [script] :
+    log ^.msg (info)
+    show ^.msg
+
+    #
+    # Core libraries: gloo-db + gloo-sqlite for data, gloo-md to
+    # render note bodies as markdown, gloo-web for the server.
+    #
+    load lib db
+    load lib sqlite
+    load lib md
+    load lib web
+
+    #
+    # App code. Order matters: data + helpers + layout before the
+    # pages that reference them.
+    #
+    load data/*
+    load helper/*
+    load app/*
+    load shared/*
+    load layout/*
+    load page/*
+    load page/people/*
+    load page/notes/*
+
+    #
+    # Fail early with a clear message if the database is missing.
+    #
+    run data.check
+
+    #
+    # Start the server and open a browser.
+    #
+    tell app.svr to start
+    run info.show
+    tell app.url to open

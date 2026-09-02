@@ -1,0 +1,24 @@
+#
+# Top navigation bar, rendered into the layout.
+#
+# <%= nav_link ... %> resolves to the helper.nav_link function
+# (helper/nav_link.gloo).
+#
+
+shared [can] :
+  nav [part] :
+    content [text] : BEGIN
+<nav class="navbar navbar-expand bg-dark border-bottom border-body mb-4" data-bs-theme="dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <image src="/asset/image/people.png" width="28" height="28" class="align-text-bottom" />
+      Contacts
+    </a>
+    <ul class="navbar-nav">
+      <%= nav_link 'People', '/people/' %>
+      <%= nav_link 'Birthdays', '/people/bdays' %>
+      <%= nav_link 'Notes', '/notes/' %>
+    </ul>
+  </div>
+</nav>
+END

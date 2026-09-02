@@ -1,0 +1,78 @@
+#
+# Edit person form. Loads current values, posts to
+# /people/{id}/update.
+#
+# Route: GET /people/{id}/edit
+#
+page [can] :
+  people [can] :
+    edit [page] :
+
+      params [can] :
+        id [int] :
+        name [string] :
+        dob [string] :
+        pinned [bool] :
+        bio [string] :
+
+      on_prerender [script] :
+        put ^.params.id into ^.get.params.id
+        run ^.get
+
+        check ^.get.result.id for blank?
+        if it then go page.err
+
+        put '/people/' + ^.params.id + '/update' into ^.body.content.f.action
+        put '/people/' + ^.params.id into ^.body.content.f.cancel_path
+
+      get [query] :
+        database [alias] : data.conn
+        sql : SELECT id, name, dob, pinned, bio FROM people WHERE id = ?
+        params [can] :
+          id [int] :
+        result [can] :
+          id [int] :
+          name [alias] : page.people.edit.params.name
+          dob [alias] : page.people.edit.params.dob
+          pinned [alias] : page.people.edit.params.pinned
+          bio [alias] : page.people.edit.params.bio
+
+      head [can] :
+        content [can] :
+          title [e] : Edit person
+
+      body [e] :
+        content [can] :
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/person.png" width="40" height="40" class="me-2" />
+  <h2 class="h3 mb-0">Edit person</h2>
+</div>
+END
+
+          f [form] :
+            name [string] : person_form
+            action [string] :
+            method [string] : post
+            cancel_path [string] :
+            styles [alias] : form_styles
+            content [can] :
+              name [field] :
+                label [string] : Name
+                type [string] : text
+                value [alias] : page.people.edit.params.name
+              dob [field] :
+                label [string] : Birthday
+                type [string] : text
+                placeholder [string] : YYYY-MM-DD
+                value [alias] : page.people.edit.params.dob
+              pinned [field] :
+                label [string] : Pin to dashboard
+                type [string] : checkbox
+                description [string] : Pinned
+                checked [alias] : page.people.edit.params.pinned
+              bio [field] :
+                label [string] : Notes
+                type [string] : textarea
+                rows [string] : 6
+                value [alias] : page.people.edit.params.bio

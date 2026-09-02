@@ -1,0 +1,42 @@
+#
+# The database connection, shared by every query in the app.
+#
+# gloo-sqlite's 'sqlite' object is the connection; every 'query'
+# points at it through a 'database [alias]' child. The .db file lives
+# in this folder and is built by db/scaffold.gloo.
+#
+data [can] :
+
+  #
+  # The connection. 'database' is filled in on_load with an absolute
+  # path so the app works no matter where it is started from.
+  # ($.app is the --app directory.)
+  #
+  conn [sqlite] :
+    database :
+
+  #
+  # The database file, so we can check that it exists.
+  #
+  file [file] :
+
+  on_load [script] :
+    put $.app + '/data/contacts.db' into data.conn.database
+    put data.conn.database into data.file
+
+  #
+  # Called from start.gloo - stop with a clear message if the
+  # database has not been built yet.
+  #
+  check [script] :
+    check data.file for exists?
+    unless it do run data.no_db
+
+  no_db [script] :
+    show '' (red)
+    show 'Database not found: ' + data.conn.database (red)
+    show '' (red)
+    show 'Build it first:' (yellow)
+    show '  gloo core_libraries/web/contacts/db/scaffold.gloo' (yellow)
+    show ''
+    quit

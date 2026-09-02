@@ -1,0 +1,28 @@
+#
+# Delete a person and their notes, then redirect to the list.
+#
+# Route: POST /people/{id}/delete
+#
+page [can] :
+  people [can] :
+    delete [page] :
+
+      params [can] :
+        id [string] :
+
+      del_notes [query] :
+        database [alias] : data.conn
+        sql : DELETE FROM notes WHERE person_id = ?
+        params [can] :
+          id [alias] : page.people.delete.params.id
+
+      del_person [query] :
+        database [alias] : data.conn
+        sql : DELETE FROM people WHERE id = ?
+        params [can] :
+          id [alias] : page.people.delete.params.id
+
+      on_render [script] :
+        run ^.del_notes
+        run ^.del_person
+        go '/people/' (hard)

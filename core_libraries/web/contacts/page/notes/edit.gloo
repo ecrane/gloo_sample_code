@@ -1,0 +1,80 @@
+#
+# Edit note form. Posts to /notes/{id}/update.
+#
+# Route: GET /notes/{id}/edit
+#
+page [can] :
+  notes [can] :
+    edit [page] :
+
+      params [can] :
+        id [int] :
+        name [string] :
+        title [string] :
+        body [string] :
+        contacted_at [string] :
+
+      on_prerender [script] :
+        put ^.params.id into ^.get.params.id
+        run ^.get
+
+        check ^.get.result.id for blank?
+        if it then go page.err
+
+        put ^.params.name into ^.head.content.title
+        put '/notes/' + ^.params.id + '/update' into ^.body.content.f.action
+        put '/notes/' + ^.params.id into ^.body.content.f.cancel_path
+
+      get [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT n.id, p.name, n.title, n.body,
+            strftime('%Y-%m-%d', n.contacted_at) AS contacted_at
+          FROM notes n
+          JOIN people p ON p.id = n.person_id
+          WHERE n.id = ?
+          END
+        params [can] :
+          id [int] :
+        result [can] :
+          id [int] :
+          name [alias] : page.notes.edit.params.name
+          title [alias] : page.notes.edit.params.title
+          body [alias] : page.notes.edit.params.body
+          contacted_at [alias] : page.notes.edit.params.contacted_at
+
+      head [can] :
+        content [can] :
+          title [e] : Edit note
+
+      body [e] :
+        content [can] :
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/note.png" width="40" height="40" class="me-2" />
+  <h2 class="h3 mb-0">Edit note</h2>
+</div>
+END
+
+          f [form] :
+            name [string] : note_form
+            action [string] :
+            method [string] : post
+            cancel_path [string] :
+            styles [alias] : form_styles
+            content [can] :
+              title [field] :
+                label [string] : Title
+                type [string] : text
+                value [alias] : page.notes.edit.params.title
+              contacted_at [field] :
+                label [string] : Date
+                type [string] : text
+                placeholder [string] : YYYY-MM-DD
+                value [alias] : page.notes.edit.params.contacted_at
+              body [field] :
+                label [string] : Note
+                type [string] : textarea
+                rows [string] : 8
+                autofocus [boolean] : true
+                value [alias] : page.notes.edit.params.body

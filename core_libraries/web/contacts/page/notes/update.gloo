@@ -1,0 +1,33 @@
+#
+# Apply a note edit, then redirect to the note.
+#
+# Route: POST /notes/{id}/update
+#
+page [can] :
+  notes [can] :
+    update [page] :
+
+      params [can] :
+        id [int] :
+        title [string] :
+        body [text] :
+        contacted_at [string] :
+
+      write [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          UPDATE notes
+          SET title = ?, body = ?,
+            contacted_at = coalesce( nullif(?,''), contacted_at ),
+            updated_at = datetime('now')
+          WHERE id = ?
+          END
+        params [can] :
+          title [alias] : page.notes.update.params.title
+          body [alias] : page.notes.update.params.body
+          contacted_at [alias] : page.notes.update.params.contacted_at
+          id [alias] : page.notes.update.params.id
+
+      on_render [script] :
+        tell ^.write to run
+        go '/notes/' + ^.params.id (hard)

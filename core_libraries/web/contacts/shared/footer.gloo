@@ -1,0 +1,11 @@
+#
+# Page footer.
+#
+
+shared [can] :
+  footer [part] :
+    content [text] : BEGIN
+<footer class="container text-center text-muted py-4 mt-5 border-top">
+  <small>Contacts &mdash; a gloo-web sample app</small>
+</footer>
+END

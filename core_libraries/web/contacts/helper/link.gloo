@@ -1,0 +1,38 @@
+#
+# link( name, path, classes ) -> an <a> tag.
+#
+# Helper functions are [ƒ] objects under a 'helper' container. The web
+# renderer looks here whenever it hits an unknown <%= name ... %> call
+# in page content.
+#
+#   <%= link 'Edit', "/people/#{id}/edit" %>
+#   <%= link 'Edit', "/people/#{id}/edit", 'btn btn-sm btn-outline-secondary' %>
+#
+
+helper [can] :
+
+  link [ƒ] :
+
+    params [container] :
+      name [string] : Click
+      path [string] : /
+      classes [string] :
+
+    result [string] :
+
+    on_invoke [script] :
+      check ^.params.classes for blank?
+      if it then put 'link-primary' into ^.params.classes
+      run ^.tmpl
+      put ^.tmpl.result into ^.result
+      put '' into ^.params.classes
+
+    tmpl [erb] :
+      params [container] :
+        name [alias] : helper.link.params.name
+        path [alias] : helper.link.params.path
+        classes [alias] : helper.link.params.classes
+      template [text] : BEGIN
+<a href="<%= path %>" class="<%= classes %>"><%= name %></a>
+END
+      result [text] :

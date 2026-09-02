@@ -1,0 +1,31 @@
+#
+# Delete a note, then redirect back to its person.
+#
+# Route: POST /notes/{id}/delete
+#
+page [can] :
+  notes [can] :
+    delete [page] :
+
+      params [can] :
+        id [string] :
+        person_id [int] :
+
+      lookup [query] :
+        database [alias] : data.conn
+        sql : SELECT person_id FROM notes WHERE id = ?
+        params [can] :
+          id [alias] : page.notes.delete.params.id
+        result [can] :
+          person_id [alias] : page.notes.delete.params.person_id
+
+      del [query] :
+        database [alias] : data.conn
+        sql : DELETE FROM notes WHERE id = ?
+        params [can] :
+          id [alias] : page.notes.delete.params.id
+
+      on_render [script] :
+        run ^.lookup
+        run ^.del
+        go '/people/' + ^.params.person_id (hard)

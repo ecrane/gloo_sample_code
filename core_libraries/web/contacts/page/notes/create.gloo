@@ -1,0 +1,31 @@
+#
+# Create a note (posted from the person detail page), then redirect
+# back to that person.
+#
+# Route: POST /notes
+#
+page [can] :
+  notes [can] :
+    create [page] :
+
+      params [can] :
+        person_id [int] :
+        title [string] :
+        body [text] :
+        contacted_at [string] :
+
+      write [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          INSERT INTO notes ( person_id, title, body, contacted_at, created_at, updated_at )
+          VALUES ( ?, ?, ?, coalesce( nullif(?,''), date('now') ), datetime('now'), datetime('now') )
+          END
+        params [can] :
+          person_id [alias] : page.notes.create.params.person_id
+          title [alias] : page.notes.create.params.title
+          body [alias] : page.notes.create.params.body
+          contacted_at [alias] : page.notes.create.params.contacted_at
+
+      on_render [script] :
+        tell ^.write to run
+        go '/people/' + ^.params.person_id (hard)

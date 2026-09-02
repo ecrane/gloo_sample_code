@@ -1,0 +1,34 @@
+#
+# title_card( title, icon ) -> a page heading with an icon.
+#
+#   <%= title_card 'People', 'people.png' %>
+#
+# The template calls image_tag, which is a built-in web helper (it
+# resolves the asset's published path).
+#
+
+helper [can] :
+
+  title_card [ƒ] :
+
+    params [container] :
+      title [string] :
+      icon [string] :
+
+    result [string] :
+
+    quoted_icon [string] :
+
+    on_invoke [script] :
+      put "'" + ^.params.icon + "'" into ^.quoted_icon
+      put ^.open + '<%= image_tag ' + ^.quoted_icon + ', ' + ^.img_attrs + ' %>' + ^.close into ^.result
+
+    img_attrs [string] : "width='40' height='40' class='me-2'"
+
+    open [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+END
+    close [text] : BEGIN
+<h2 class="h3 mb-0"><%= title %></h2>
+</div>
+END

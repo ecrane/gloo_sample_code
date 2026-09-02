@@ -1,0 +1,71 @@
+#
+# The person's notes, newest first.
+#
+# Builds an HTML string by running a query and looping its result with
+# an [each], rendering each row through an [erb] template.
+#
+
+page [can] :
+  people [can] :
+    _notes [part] :
+
+      #
+      # Alias chain back to the id of the person being shown.
+      #
+      person_id [alias] : page.people.show.params.id
+
+      on_render [script] :
+        put '' into ^.content
+        run ^.sql
+        run ^.for
+        check ^.content for blank?
+        if it then put ^.empty into ^.content
+
+      after_render [script] :
+        put '' into ^.content
+
+      empty [string] : <p class="text-muted">No notes yet.</p>
+
+      sql [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT id, title, body,
+            strftime('%Y.%m.%d', contacted_at) AS on_date
+          FROM notes
+          WHERE person_id = ?
+          ORDER BY contacted_at DESC, id DESC
+          END
+        params [can] :
+          person_id [alias] : page.people._notes.person_id
+        result [can] :
+
+      tmpl [erb] :
+        params [container] :
+          id [int] :
+          on_date [string] :
+          title [string] :
+          body [string] :
+        template [text] : BEGIN
+<div class="note-card">
+  <div class="note-date">
+    <a href="/notes/<%= id %>"><%= on_date %></a>
+    <%= title.to_s.empty? ? '' : ' &middot; ' + title %>
+  </div>
+  <%= body %>
+</div>
+END
+        result [text] :
+
+      for [each] :
+        child [alias] :
+        in [alias] : page.people._notes.sql.result
+        do [script] :
+          put ^.child.id into ^^.tmpl.params.id
+          put ^.child.on_date into ^^.tmpl.params.on_date
+          put ^.child.title into ^^.tmpl.params.title
+          invoke helper.render_md ^.child.body
+          put it into ^^.tmpl.params.body
+          run ^^.tmpl
+          put ^^.content + ^^.tmpl.result into ^^.content
+
+      content [string] :

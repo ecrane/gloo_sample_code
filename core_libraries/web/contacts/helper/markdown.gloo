@@ -1,0 +1,21 @@
+#
+# render_md( text ) -> HTML rendered from markdown.
+#
+#   <%= render_md person.bio %>
+#
+# Note bodies and the person bio are stored as markdown; this renders
+# them with gloo-md (loaded in start.gloo). 'render' also leaves the
+# HTML in 'it', which is what invoke returns to the caller.
+#
+
+helper [can] :
+
+  render_md [ƒ] :
+
+    params [container] :
+      text [md] :
+
+    result [text] :
+
+    on_invoke [script] :
+      tell helper.render_md.params.text to render ( helper.render_md.result )

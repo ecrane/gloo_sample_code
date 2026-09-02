@@ -1,0 +1,22 @@
+#
+# nav_link( name, path ) -> a navbar list item.
+#
+#   <%= nav_link 'People', '/people/' %>
+#
+
+helper [can] :
+
+  nav_link [ƒ] :
+
+    params [container] :
+      name [string] : Home
+      path [string] : /
+
+    result [string] :
+
+    a [string] : <li class="nav-item"><a class="nav-link" href="
+    b [string] : ">
+    c [string] : </a></li>
+
+    on_invoke [script] :
+      put ^.a + ^.params.path + ^.b + ^.params.name + ^.c into ^.result

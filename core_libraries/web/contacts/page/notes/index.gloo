@@ -1,0 +1,87 @@
+#
+# All notes across everyone, newest first, with a text search over
+# the title, body, and person name.
+#
+# Route: GET /notes/   (?search=... optional)
+#
+page [can] :
+  notes [can] :
+    index [page] :
+
+      params [can] :
+        search [string] :
+
+      on_prerender [script] :
+        check ^.params.search for blank?
+        if it \
+          then put 'page.notes.index.all_q' into ^.tbl.data* \
+          else run ^.setup_search
+
+      setup_search [script] :
+        put '%' + page.notes.index.params.search + '%' into page.notes.index.search_q.params.term
+        put 'page.notes.index.search_q' into page.notes.index.tbl.data*
+
+      all_q [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT n.id, n.person_id, p.name,
+            strftime('%Y.%m.%d', n.contacted_at) AS on_date,
+            coalesce( nullif(n.title,''), substr(n.body,1,80) ) AS summary
+          FROM notes n
+          JOIN people p ON p.id = n.person_id
+          ORDER BY n.contacted_at DESC, n.id DESC
+          END
+
+      search_q [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          SELECT n.id, n.person_id, p.name,
+            strftime('%Y.%m.%d', n.contacted_at) AS on_date,
+            coalesce( nullif(n.title,''), substr(n.body,1,80) ) AS summary
+          FROM notes n
+          JOIN people p ON p.id = n.person_id
+          WHERE lower(n.title) LIKE lower(?)
+             OR lower(n.body)  LIKE lower(?)
+             OR lower(p.name)  LIKE lower(?)
+          ORDER BY n.contacted_at DESC, n.id DESC
+          END
+        params [can] :
+          term [string] :
+          term2 [alias] : page.notes.index.search_q.params.term
+          term3 [alias] : page.notes.index.search_q.params.term
+
+      tbl [tbl] :
+        styles [alias] : tbl_styles
+        always_rows [boolean] : true
+        headers [can] :
+          on_date : When
+          name : Person
+          summary : Note
+        cells [can] :
+          name : <%= link name, "/people/#{person_id}" %>
+          summary : <%= link summary, "/notes/#{id}" %>
+        data [alias] : page.notes.index.all_q
+
+      head [can] :
+        content [can] :
+          title [e] : Notes
+
+      body [e] :
+        content [can] :
+          main [text] : BEGIN
+<div class="d-flex align-items-center border-bottom pb-2 mb-4">
+  <image src="/asset/image/note.png" width="40" height="40" class="me-2" />
+  <h2 class="h3 mb-0">Notes</h2>
+</div>
+
+<form class="row g-2 mb-4" method="get" action="/notes/">
+  <div class="col-auto">
+    <input type="search" name="search" class="form-control" placeholder="Search notes"
+      value="<%= search %>">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary" type="submit">Search</button>
+  </div>
+</form>
+END
+          tbl [alias] : page.notes.index.tbl

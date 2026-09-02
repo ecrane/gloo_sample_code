@@ -1,0 +1,28 @@
+/* Contacts - a few tweaks on top of Bootstrap. */
+
+body {
+  padding-bottom: 3rem;
+}
+
+.note-card {
+  border-left: 3px solid var(--bs-border-color);
+  padding-left: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.note-card .note-date {
+  font-size: 0.85rem;
+  color: var(--bs-secondary-color);
+}
+
+.note-card p:last-child {
+  margin-bottom: 0;
+}
+
+.bio {
+  color: var(--bs-secondary-color);
+}
+
+.days-away {
+  font-variant-numeric: tabular-nums;
+}

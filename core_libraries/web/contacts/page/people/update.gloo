@@ -1,0 +1,37 @@
+#
+# Apply an edit, then redirect back to the person.
+#
+# Route: POST /people/{id}/update
+#
+page [can] :
+  people [can] :
+    update [page] :
+
+      params [can] :
+        id [int] :
+        name [string] :
+        dob [string] :
+        pinned [string] :
+        bio [text] :
+        pinned_int [int] : 0
+
+      write [query] :
+        database [alias] : data.conn
+        sql : BEGIN
+          UPDATE people
+          SET name = ?, dob = ?, pinned = ?, bio = ?, updated_at = datetime('now')
+          WHERE id = ?
+          END
+        params [can] :
+          name [alias] : page.people.update.params.name
+          dob [alias] : page.people.update.params.dob
+          pinned [alias] : page.people.update.params.pinned_int
+          bio [alias] : page.people.update.params.bio
+          id [alias] : page.people.update.params.id
+
+      on_render [script] :
+        put 0 into ^.params.pinned_int
+        if ^.params.pinned = 'true' then put 1 into ^.params.pinned_int
+
+        run ^.write
+        go '/people/' + ^.params.id (hard)

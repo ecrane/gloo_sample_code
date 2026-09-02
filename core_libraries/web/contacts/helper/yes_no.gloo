@@ -1,0 +1,18 @@
+#
+# yes_no( val ) -> 'Yes' or 'No'.
+#
+#   <%= yes_no pinned %>
+#
+
+helper [can] :
+
+  yes_no [ƒ] :
+
+    params [container] :
+      val [boolean] :
+
+    result [string] :
+
+    on_invoke [script] :
+      if ^.params.val then put 'Yes' into ^.result
+      if! ^.params.val do put 'No' into ^.result

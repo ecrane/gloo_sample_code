@@ -1,0 +1,37 @@
+#
+# The web server for the Contacts app.
+#
+# The router fills 'pages' automatically by walking the page/ folder:
+# page/people/index.gloo becomes the route /people/, a numeric URL
+# segment becomes an 'id' parameter, and the HTTP method picks the
+# page (GET -> index/show, POST -> create, etc.).
+#
+app [can] :
+
+  #
+  # The address the app runs at (used to open a browser on startup).
+  #
+  url [uri] : http://localhost:8095/
+
+  svr [svr] :
+
+    config [container] :
+      scheme [string] : http
+      host [string] : localhost
+      port [string] : 8095
+
+    on_start [script] : show 'contacts server started' (green)
+    on_stop [script] : show 'contacts server stopped' (yellow)
+
+    #
+    # Defaults: the layout wrapped around every page, the home (root)
+    # route, and the page shown on error.
+    #
+    layout [alias] : layout.primary
+    home [alias] : page.home
+    error [alias] : page.err
+
+    #
+    # Routes - added automatically by the router on start.
+    #
+    pages [can] :
