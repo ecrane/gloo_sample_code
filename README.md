@@ -45,3 +45,4 @@ Use at your own risk.
    - then others as needed
  - Use lang (gloo language) for gloo concepts and syntax
  - And once you have a sense of how gloo works, explore the more advanced features and core libraries
+ - For a complete example, check out the contacts app in core_libraries/web/contacts
