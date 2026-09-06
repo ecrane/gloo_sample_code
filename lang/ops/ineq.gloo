@@ -1,6 +1,6 @@
 #
 # Compare two values for inequality.
-# 
+#
 ineq [can] :
 
   a [string] : A
@@ -20,7 +20,7 @@ ineq [can] :
     if ^.a != ^.b then show 'a and b are not equal'
     if ^.a != ^.c then show 'a and c are not equal'
     show
-    
+
     show '---------- int -------------'
     show 'is 1 != 2?' (white)
     show 1 != 2

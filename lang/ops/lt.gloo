@@ -1,9 +1,9 @@
 #
 # Test the Less Than operator.
-# 
+#
 lt [can] :
 
-	on_load [script] :    
+	on_load [script] :
     show '---------- int -------------'
     show 'is 2 < 1?' (white)
     show 2 < 1

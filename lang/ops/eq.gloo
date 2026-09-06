@@ -1,6 +1,6 @@
 #
 # Compare two values.
-# 
+#
 eq [can] :
 
   a [string] : A
@@ -20,7 +20,7 @@ eq [can] :
     if ^.a = ^.b then show 'a and b are equal'
     if ^.a = ^.c then show 'a and c are equal'
     show
-    
+
     show '---------- int -------------'
     show 'is 1 = 2?' (white)
     show 1 = 2

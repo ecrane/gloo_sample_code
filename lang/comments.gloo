@@ -2,15 +2,35 @@
 # This is a comment.
 # Comments start with the hash/pound character '#'
 #
-comments [can] : 
+comments [can] :
 
   # Comment in here as well
   msg [string] : Comments are allowed!
 
-  on_load [script] : show comments.msg
+  on_load [script] :
+    show comments.msg
 
-# 
+    # A command line may also end with an inline comment. It is
+    # stripped before the line runs, so it has no effect.
+    show comments.msg          # prints the message
+    show 3 + 4                 # prints 7
+
+  #
+  # A '#' is NOT a comment when it is:
+  #   - part of an object's declared value (everything after the ':')
+  #   - inside a quoted string in a command
+  #   - attached to preceding text with no space (eg. a URL fragment)
+  #
+  not_a_comment [container] :
+    note [string] : see item # 5
+    fragment [uri] : https://example.com/page#section
+
+    on_load [script] :
+      show ^.note                  # prints:  see item # 5
+      show 'a # b'                 # prints:  a # b
+
+#
 # Blank lines are allowed, but just used for clarity.
-# 
+#
 # Comments, by convention come before the thing they describe.
-# 
+#

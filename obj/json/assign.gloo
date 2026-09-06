@@ -1,0 +1,14 @@
+#
+# A JSON object can be built with a BEGIN/END block (see get.gloo), or
+# assigned a JSON string at run time. A single-quoted literal keeps its
+# double quotes, so the string goes in as-is.
+#
+assign [can] :
+  j [json] :
+  on_load [script] :
+    put '{"title":"Brute Force","meta":{"year":"2003"}}' into assign.j
+
+    tell assign.j to get ('title')
+    show it
+    tell assign.j to get ('meta.year')
+    show it

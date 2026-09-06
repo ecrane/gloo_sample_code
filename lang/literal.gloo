@@ -19,6 +19,15 @@ literal [can] :
     put "You're Awesome!" into ^.s
     show ^.s
 
+    # A quote of the other kind inside needs no escaping -- this is
+    # the usual way to write a JSON literal.
+    put '{"lang":"gloo","ok":true}' into ^.s
+    show ^.s
+
+    # A quote of the same kind inside is escaped with a backslash.
+    put "she said \"hi\"" into ^.s
+    show ^.s
+
     # Number literals
     put 1 into ^.i
     show ^.i

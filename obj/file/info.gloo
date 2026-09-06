@@ -3,31 +3,29 @@
 #
 info [can] :
 
-	path [string] : obj/file/in.txt
-  f [file] : 
-	parent_dir [file] : 
+  path [string] : obj/file/in.txt
+  f [file] :
+  parent_dir [file] :
 
   on_load [script] :
     put gloo.gloo_projects and info.path into info.f
+    run info.name
+    run info.exists
+    run info.dir
 
-		run info.name
-		run info.exists
-		run info.dir
+  name [script] :
+    show "-------------"
+    show "Full file name:  " + ^.f
 
-	name [script] :
-	  show "-------------"
-		show "Full file name:  " + ^.f
+    check ^.f for get_name
+    show "The file name alone: " and it
 
-		check ^.f for get_name
-		show "The file name alone: " and it
+    check ^.f for get_ext
+    show "The file extension: " and it
 
-		check ^.f for get_ext
-		show "The file extension: " and it
-
-		check ^.f for get_parent
-		put it into ^.parent_dir
-		show "The file path: " and ^.parent_dir
-
+    check ^.f for get_parent
+    put it into ^.parent_dir
+    show "The file path: " and ^.parent_dir
 
   #
   # Check to see if a file exists and what sort of file it is.
