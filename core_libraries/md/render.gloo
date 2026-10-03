@@ -7,7 +7,8 @@
 # value. Messages:
 #
 #   show              print the Markdown to the terminal
-#   render ({dst})    convert to HTML - into {dst} and into 'it'
+#   render ({dst})    convert to HTML - into {dst} (it is true), or
+#                     into 'it' when there's no {dst}
 #
 # render also understands gloo's Markdown extension blocks:
 #   [!NOTE] [!IDEA] [!CHECK] [!QUOTE] [!PANEL ...]
@@ -49,8 +50,8 @@ END
     tell render.doc to show
 
   #
-  # 'render' converts to HTML; the result is in the dst object and
-  # also in 'it'.
+  # 'render' converts to HTML; with a dst, the result is in the dst
+  # object and 'it' is true. With no dst, the HTML is in 'it'.
   #
   to_html [script] :
     show 'Rendered HTML:' (white)
