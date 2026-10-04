@@ -4,8 +4,8 @@
 #   <%= render_md person.bio %>
 #
 # Note bodies and the person bio are stored as markdown; this renders
-# them with gloo-md (loaded in start.gloo). 'render' also leaves the
-# HTML in 'it', which is what invoke returns to the caller.
+# them with gloo-md (loaded in start.gloo). 'render' puts the HTML in
+# the function's result, which is what invoke returns to the caller.
 #
 
 helper [can] :
