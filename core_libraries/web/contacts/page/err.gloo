@@ -1,22 +1,21 @@
 #
-# Shown for any route that doesn't resolve.
+# Shown when a request fails on the server.
+# The server sends it with a 500 (app.svr.error points here).
 #
 
 page [can] :
   err [page] :
 
-    return_code [int] : 404
-
     head [e] :
       content [can] :
-        title [e] : Not Found
+        title [e] : Something Went Wrong
 
     body [e] :
       content [can] :
         main [text] : BEGIN
 <div class="py-5 text-center">
-  <h2>Not found</h2>
-  <p class="text-muted">That page doesn't exist.</p>
+  <h2>Something went wrong</h2>
+  <p class="text-muted">The server couldn't finish that request.</p>
   <a href="/" class="btn btn-primary">Go home</a>
 </div>
 END

@@ -25,11 +25,13 @@ app [can] :
 
     #
     # Defaults: the layout wrapped around every page, the home (root)
-    # route, and the page shown on error.
+    # route, the page sent when a request fails (500), and the page
+    # sent when no route matches (404).
     #
     layout [alias] : layout.primary
     home [alias] : page.home
     error [alias] : page.err
+    not_found [alias] : page.not_found
 
     #
     # Routes - added automatically by the router on start.

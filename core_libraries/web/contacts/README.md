@@ -50,6 +50,8 @@ layout/ shared/       the page layout, nav, footer
 helper/               small [ƒ] helpers used from page templates (link, title, markdown, …)
 page/                 one file per route; the router maps folders + names to URLs
   home.gloo             /
+  not_found.gloo        sent with a 404 when no route matches
+  err.gloo              sent with a 500 when a request fails
   people/                /people/…
   notes/                 /notes/…
 ```
