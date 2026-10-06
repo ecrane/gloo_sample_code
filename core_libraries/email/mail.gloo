@@ -51,11 +51,18 @@ END
     show '  run mail.send_it    - send msg via smtp'
     show '  run mail.fetch_it   - fetch unseen mail via imap'
 
+  #
+  # send and fetch put true in 'it' if they worked, false if not (the
+  # error is reported either way), so check it before going on.
+  #
   send_it [script] :
     tell mail.smtp to send ( mail.msg )
-    show 'sent.'
+    if it then show 'sent.'
 
   fetch_it [script] :
     tell mail.inbox to fetch
+    if it then run mail.show_fetched
+
+  show_fetched [script] :
     show 'fetched:'
     list mail.inbox.messages
