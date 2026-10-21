@@ -23,6 +23,7 @@ system [container] :
 		show "  gloo config: " + $.gloo_config (white)
 		show "  gloo projects: " + $.gloo_projects (white)
 		show "  gloo log: " + $.gloo_log (white)
+		show "  gloo tmp: " + $.gloo_tmp (white)
 
 	show_terminal [script] :
     show $.line " ----- Terminal -----" (yellow)

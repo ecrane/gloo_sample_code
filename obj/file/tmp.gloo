@@ -1,0 +1,28 @@
+#
+# Use the gloo tmp folder for a scratch file.
+#
+# $.gloo_tmp is a folder for temporary files. It's ~/gloo/tmp unless
+# tmp_path in gloo.yml says otherwise, and gloo creates it if it's
+# missing. Use it instead of /tmp, which doesn't exist on Windows.
+#
+tmp [can] :
+
+  name [string] : gloo_tmp_sample.txt
+  msg [string] : Scratch data, gone in a moment
+  read_back [string] :
+  f [file] :
+
+  on_load [script] :
+    show "The gloo tmp folder: " + $.gloo_tmp
+
+    # Build the scratch file's full path inside the tmp folder
+    put $.gloo_tmp and '/' and tmp.name into tmp.f
+
+    tell tmp.f to write (tmp.msg)
+    tell tmp.f to read (tmp.read_back)
+    show "Read back: " + tmp.read_back
+
+    # Scratch files are ours to clean up
+    tell tmp.f to delete
+    check tmp.f for exists?
+    show "Still there after delete? " + it
