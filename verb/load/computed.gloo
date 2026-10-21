@@ -1,0 +1,20 @@
+#
+# Load a file whose name is worked out.
+#
+# Put an expression in parentheses and gloo works it out, then loads
+# the file it names. Anything not in parentheses is taken literally.
+#
+computed [can] :
+
+  folder [string] : verb/load/
+  which [string] : b
+
+  on_load [script] :
+    # Build the name from parts (the + is optional)
+    load ( ^.folder 'a' )
+
+    # Use a name held in an object
+    load ( ^.folder ^.which )
+
+    # A literal name, as usual
+    load verb/load/c
