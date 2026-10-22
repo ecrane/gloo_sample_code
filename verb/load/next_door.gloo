@@ -1,0 +1,19 @@
+#
+# Load a file that sits next to this one.
+#
+# source_dir is the folder of the file an object was loaded from, so a
+# script can reach its neighbours without a hard-coded path, wherever
+# the project lives.
+#
+next_door [can] :
+
+  where [string] :
+  neighbor [string] : /a.gloo
+
+  on_load [script] :
+    check next_door for source_dir
+    put it into ^.where
+    show "This file is in: " + ^.where
+
+    # Build the neighbour's path from this file's folder
+    load ( ^.where ^.neighbor )

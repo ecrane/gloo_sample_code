@@ -23,3 +23,10 @@ obj [container] :
 		check obj.msg for blank?
 		show it
 		show
+
+		show 'Which file was obj loaded from, and what folder is it in?'
+		check obj for source_file
+		show it
+		check obj for source_dir
+		show it
+		show
