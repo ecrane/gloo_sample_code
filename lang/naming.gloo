@@ -1,8 +1,9 @@
 #
 # Example of object naming.
 #
-# NOTE that the second 'a' and the 'A' objects are not reachable.
-# 'naming.a' will always reach the 'First A' string.
+# NOTE that the second 'a' and the 'A' lines name the same object as
+# the first: 'naming.a' is 'First A', and loading warns that the other
+# two values are ignored.
 #
 naming [container] : 
 
