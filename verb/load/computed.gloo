@@ -6,15 +6,15 @@
 #
 computed [can] :
 
-  folder [string] : verb/load/
+  ext [string] : .gloo
   which [string] : b
 
   on_load [script] :
     # Build the name from parts (the + is optional)
-    load ( ^.folder 'a' )
+    load ( 'a' ^.ext )
 
     # Use a name held in an object
-    load ( ^.folder ^.which )
+    load ( ^.which )
 
     # A literal name, as usual
-    load verb/load/c
+    load c

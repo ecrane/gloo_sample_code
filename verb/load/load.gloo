@@ -7,6 +7,7 @@ load [can] :
 
   on_load [script] :
     show ^.msg (white)
-    load verb/load/a
-    load verb/load/b
-    load verb/load/c
+    # These files sit next to this one
+    load a
+    load b
+    load c
