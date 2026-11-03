@@ -1,19 +1,27 @@
 #
 # Load a file that sits next to this one.
 #
-# source_dir is the folder of the file an object was loaded from, so a
-# script can reach its neighbours without a hard-coded path, wherever
-# the project lives.
+# A relative load looks next to the file the loading script came from
+# first, so a plain name finds a neighbour wherever the project lives
+# and whatever folder gloo was started from. (In App mode the app
+# folder is looked in first; see Application, Script Mode and App Mode.)
+#
+# source_dir is the folder of the file an object was loaded from. A load
+# doesn't need it any more, but it's still the way to build a full path
+# to a neighbour, eg. for a [file] object or a program to run.
 #
 next_door [can] :
 
   where [string] :
-  neighbor [string] : /a.gloo
+  neighbor [string] : /b.gloo
 
   on_load [script] :
+    # The new way: a plain relative name, found next to this file
+    load a
+
+    # The older way: build the full path from this file's folder.
+    # It still works, and shows what "next to this file" means.
     check next_door for source_dir
     put it into ^.where
     show "This file is in: " + ^.where
-
-    # Build the neighbour's path from this file's folder
     load ( ^.where ^.neighbor )
