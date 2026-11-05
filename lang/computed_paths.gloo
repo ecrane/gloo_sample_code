@@ -1,0 +1,94 @@
+#
+# Computed object paths: ( … )
+#
+# Where a verb expects an object path, an expression in parentheses
+# is worked out, and its value is used as the path, as if it had
+# been typed there:
+#
+#   create ( 'list.' n ) as string
+#   put 'red' into ( 'list.' n )
+#   tell ( job ) to run
+#
+# Without parentheses you get the object; with them, the path its
+# value holds. Think of ( job ) as an inline alias, for one line.
+# The fixed part of a path is text, so it's quoted: 'list.'
+#
+# Works for tell, check, put … into, create, move, list, run,
+# invoke and save.
+#
+computed_paths [can] :
+
+  on_load [script] :
+    run ^.numbered_list
+    run ^.pick_a_job
+    run ^.aliases
+
+  #
+  # Build a numbered list: work out each child's path, create it
+  # there, and put its value in. (Before computed paths this took
+  # an alias: put the path into slot*, then create slot*.)
+  #
+  words [string] : red green blue
+  list [can] :
+  n [int] : 0
+
+  numbered_list [script] :
+    show '----- a numbered list -----' (white)
+    tell ^.add_each to run
+    tell ^.list to show_key_value_table
+
+  # ^ is this [each] object, so ^^ is computed_paths.
+  add_each [each] :
+    word [string] :
+    in [alias] : computed_paths.words
+    do [script] :
+      tell ^^.n to inc
+      create ( '^^.list.' ^^.n ) as string
+      put ^.word into ( '^^.list.' ^^.n )
+
+  #
+  # Send a message to an object picked at runtime.
+  #
+  jobs [can] :
+    daily [script] : show 'running the daily job'
+    weekly [script] : show 'running the weekly job'
+  which [string] : weekly
+
+  pick_a_job [script] :
+    show '----- run the job named in which -----' (white)
+    run ( '^.jobs.' ^.which )
+
+  #
+  # Aliases inside parentheses.
+  # ln points at a.s, and a.s holds the text 'computed_paths.b.t',
+  # which is the path of another object.
+  #
+  a [can] :
+    s [string] : computed_paths.b.t
+  b [can] :
+    t [string] :
+  ln [alias] : computed_paths.a.s
+
+  aliases [script] :
+    show '----- aliases inside parentheses -----' (white)
+
+    # put into ln: the alias forwards to its target, a.s.
+    put 'computed_paths.b.t' into ^.a.s
+    put 'one' into ^.ln
+    show 'put into ln       -> a.s is: ' ^.a.s
+
+    # put into ( ln ): working out ln gives a.s's value, and that
+    # value is used as the path. A second hop: into b.t.
+    put 'computed_paths.b.t' into ^.a.s
+    put 'two' into ( ^.ln )
+    show 'put into ( ln )   -> b.t is: ' ^.b.t
+
+    # put into ( ln* ): ln* is the alias's own value, the path a.s.
+    # The same as put into ln.
+    put 'three' into ( ^.ln* )
+    show 'put into ( ln* )  -> a.s is: ' ^.a.s
+
+    # put into ln*: sets the alias itself. Now it points at b.t.
+    put 'computed_paths.b.t' into ^.ln*
+    put 'four' into ^.ln
+    show 'put into ln*, then ln -> b.t is: ' ^.b.t

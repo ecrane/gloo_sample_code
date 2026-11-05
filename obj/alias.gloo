@@ -41,9 +41,11 @@ alias [can] :
     show alias.ln
     show alias.ln*
   
-  # 
+  #
   # Example of creating an object using an alias.
-  # 
+  # For a path used only once, a computed path needs no alias:
+  # see lang/computed_paths.gloo.
+  #
   add [script] :
     show '----- creating object using alias -----' (white)
     put 'x' into alias.ln*
