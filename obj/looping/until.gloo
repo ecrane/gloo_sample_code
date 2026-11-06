@@ -1,0 +1,72 @@
+#
+# Until: run a script again and again until a condition is true.
+#
+# Use repeat when you know how many times; use until when you know
+# when to stop. Each pass runs do, then done, and the loop ends when
+# done's result (whatever is in it) is true. done is checked after
+# each pass, so do always runs at least once.
+#
+# index (the pass, from 0) and max (the most passes) are optional.
+# Reaching max is an error, and it is false.
+#
+until [can] :
+
+  on_load [script] :
+    run until.count_up
+    run until.pick_blue
+    run until.retry
+
+  #
+  # A one-line done: eval puts its answer in it.
+  #
+  x [int] : 0
+  up [until] :
+    do [script] : tell until.x to inc
+    done [script] : eval until.x > 100
+
+  count_up [script] :
+    show '----- count past 100 -----' (white)
+    tell until.up to run
+    show until.x
+
+  #
+  # A question answers in it too: check ... for ...
+  # Pick random colors until one starts with b.
+  #
+  colors [can] :
+    red [string] : red
+    green [string] : green
+    blue [string] : blue
+    yellow [string] : yellow
+  color [string] :
+  picks [int] : 0
+  pick [until] :
+    do [script] :
+      tell until.picks to inc
+      tell until.colors to random_child_value
+      put it into until.color
+    done [script] : check until.color for starts_with? ( 'b' )
+
+  pick_blue [script] :
+    show '----- pick until it starts with b -----' (white)
+    tell until.pick to run
+    show until.color ' after ' until.picks ' picks'
+
+  #
+  # A retry with a limit: index counts the passes, max stops a loop
+  # whose done never comes true.
+  #
+  tries [int] : 0
+  found [bool] : false
+  attempt [until] :
+    max [int] : 5
+    index [int] :
+    do [script] :
+      tell until.tries to inc
+      if until.tries = 3 then put true into until.found
+    done [script] : eval until.found
+
+  retry [script] :
+    show '----- retry, up to 5 times -----' (white)
+    tell until.attempt to run
+    show 'found on pass ' until.attempt.index
