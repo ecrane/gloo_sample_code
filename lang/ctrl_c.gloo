@@ -1,0 +1,59 @@
+#
+# Ctrl-C: stop what's running, and get a clean prompt.
+#
+# Ctrl-C isn't a way to leave gloo - 'quit' is. It stops whatever is
+# running, says where (a warning: the work it stopped may be half
+# done), and leaves you at the gloo prompt with everything that was
+# loaded and done so far still there to look at.
+#
+# Run it at a terminal:  gloo ~/dev/gloo_sample_code/lang/ctrl_c.gloo
+#
+# Two ways to try it:
+#
+#   1. Press Ctrl-C at the name prompt. The run stops right there:
+#      you're at the gloo prompt, and the counting never started.
+#
+#   2. Type a name. It counts until you press Ctrl-C, then says where
+#      it was, for example:
+#        Stopped by Ctrl-C: ctrl_c.forever.do, line 1.
+#      (or ctrl_c.on_load, line 3 - the line running the loop - if
+#      the Ctrl-C lands between passes)
+#
+# Then, at the gloo prompt:
+#
+#   show ctrl_c.count    - how far it got
+#   Ctrl-C               - on an empty line, says how to leave
+#   quit                 - runs on_quit, and leaves
+#
+# After a Ctrl-C has stopped something, gloo exits with status 130
+# (try 'echo $?' after quitting), so a shell script that ran it can
+# tell. Ctrl-C isn't an error: on_error doesn't run.
+#
+load lib cli
+
+ctrl_c [can] :
+
+  count [int] : 0
+
+  name [ask] :
+    prompt [string] : Your name (or Ctrl-C):
+    result [string] :
+
+  #
+  # Counts until it's stopped: done is never true.
+  #
+  forever [until] :
+    do [script] : tell ctrl_c.count to inc
+    done [script] : eval false
+
+  on_load [script] :
+    run ctrl_c.name
+    show 'Hello, ' ctrl_c.name.result '. Counting until you press Ctrl-C...'
+    tell ctrl_c.forever to run
+    show 'never shown: the loop only ends with Ctrl-C'
+
+  on_error [script] :
+    show 'on_error ran (it should not, for Ctrl-C)'
+
+  on_quit [script] :
+    show 'on_quit: counted to ' ctrl_c.count
