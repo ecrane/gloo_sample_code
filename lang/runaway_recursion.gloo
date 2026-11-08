@@ -1,0 +1,45 @@
+#
+# Runaway recursion.
+#
+# A script that runs itself with no end - directly, through other
+# scripts that run each other, or a function that invokes itself -
+# runs scripts inside each other until there's no room left. Gloo
+# stops it there, with one error:
+#
+#   Could not run runaway.again: scripts ran 730 deep, one inside
+#   another (runaway recursion?).
+#
+# It unwinds the run back to the line that started the recursion:
+# no line after the inner 'run' runs, at any level on the way back
+# up. That starting line is abandoned, like any failed line, and its
+# script carries on. 'on_error' fires once, and 'it' is false.
+#
+runaway [can] :
+
+  depth [int] : 0
+  after [int] : 0
+  errors [int] : 0
+
+  on_load [script] :
+    run runaway.demo
+    show 'Done.'
+
+  on_error [script] :
+    tell runaway.errors to inc
+
+  #
+  # Runs itself, with nothing to stop it.
+  #
+  again [script] :
+    tell runaway.depth to inc
+    run runaway.again
+    tell runaway.after to inc
+
+  demo [script] :
+    show 'Running a script that runs itself...' (white)
+    run runaway.again
+    show 'it is ' it
+    show 'demo carried on past the line that started it'
+    show 'again ran itself ' runaway.depth ' times'
+    show 'lines run on the way back up: ' runaway.after
+    show 'on_error fired ' runaway.errors ' time(s)'
