@@ -34,6 +34,18 @@ literal [can] :
     put 3.12 into ^.d
     show ^.d
 
+    # Other ways to write a number. Leading zeros are fine (007 is 7,
+    # never octal); a decimal can have trailing zeros, start with a dot,
+    # or have an exponent. Not numbers: 5. (a path start), 1_000, 0x1A.
+    put 007 into ^.i
+    show ^.i
+    put 2.50 into ^.d
+    show ^.d
+    put .5 into ^.d
+    show ^.d
+    put 1.0e3 into ^.d
+    show ^.d
+
     # Boolean literals
     # Boolean literals are case insensitive
     put TRUE into ^.b
