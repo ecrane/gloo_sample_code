@@ -1,0 +1,52 @@
+#
+# The math operators: +, -, * and /.
+# An integer with an integer gives an integer;
+# a decimal on either side gives a decimal.
+#
+math [can] :
+
+  on_load [script] :
+    show '---------- int -------------'
+    show '2 + 3 =' (white)
+    show 2 + 3
+    show
+
+    show '7 - 2 =' (white)
+    show 7 - 2
+    show
+
+    show '3 * 4 =' (white)
+    show 3 * 4
+    show
+
+    show '7 / 2 =' (white)
+    show 7 / 2
+    show
+
+    show '---------- dec -------------'
+    show '1.5 + 2.25 =' (white)
+    show 1.5 + 2.25
+    show
+
+    show '10.5 / 2.0 =' (white)
+    show 10.5 / 2.0
+    show
+
+    show '---------- int and dec ---'
+    show '1 + 2.5 =' (white)
+    show 1 + 2.5
+    show
+
+    show '1 - 0.5 =' (white)
+    show 1 - 0.5
+    show
+
+    show '3 * 1.5 =' (white)
+    show 3 * 1.5
+    show
+
+    show '7 / 2.0 =' (white)
+    show 7 / 2.0
+    show
+
+    show 'Done.'

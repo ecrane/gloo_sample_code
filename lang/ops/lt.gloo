@@ -30,4 +30,13 @@ lt [can] :
     show 2.0 < 1.3
     show
 
+    show '---------- int and dec ---'
+    show 'is 1 < 1.5?' (white)
+    show 1 < 1.5
+    show
+
+    show 'is 2 < 1.5?' (white)
+    show 2 < 1.5
+    show
+
     show 'Done.'
