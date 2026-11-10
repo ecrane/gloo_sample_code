@@ -4,6 +4,19 @@
 gteq [can] :
 
 	on_load [script] :
+    show '---------- str -------------'
+    show "is 'abd' >= 'abc'?" (white)
+    show 'abd' >= 'abc'
+    show
+
+    show "is 'A' >= 'a'?" (white)
+    show 'A' >= 'a'
+    show
+
+    show "is 'x' >= 'x'?" (white)
+    show 'x' >= 'x'
+    show
+
     show '---------- int -------------'
     show 'is 1 >= 2?' (white)
     show 1 >= 2

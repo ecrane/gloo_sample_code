@@ -4,6 +4,19 @@
 lteq [can] :
 
   on_load [script] :
+    show '---------- str -------------'
+    show "is 'abc' <= 'abd'?" (white)
+    show 'abc' <= 'abd'
+    show
+
+    show "is 'B' <= 'a'?" (white)
+    show 'B' <= 'a'
+    show
+
+    show "is 'x' <= 'x'?" (white)
+    show 'x' <= 'x'
+    show
+
     show '---------- int -------------'
     show 'is 2 <= 1?' (white)
     show 2 <= 1
