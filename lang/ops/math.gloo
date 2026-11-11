@@ -1,5 +1,5 @@
 #
-# The math operators: +, -, * and /.
+# The math operators: +, -, * and /, and grouping with ( ).
 # An integer with an integer gives an integer;
 # a decimal on either side gives a decimal.
 #
@@ -68,6 +68,27 @@ math [can] :
 
     show "1 - 'a' = (warns: not a number, so 0)" (white)
     show 1 - 'a'
+    show
+
+    show '---------- grouping -------'
+    show '2 + 3 * 4 = (left to right)' (white)
+    show 2 + 3 * 4
+    show
+
+    show '2 + ( 3 * 4 ) =' (white)
+    show 2 + ( 3 * 4 )
+    show
+
+    show '( 1 + 2 ) * 3 =' (white)
+    show ( 1 + 2 ) * 3
+    show
+
+    show '2 * ( 3 * ( 1 + 1 ) ) =' (white)
+    show 2 * ( 3 * ( 1 + 1 ) )
+    show
+
+    show '((1 + 2) * (3 + 4)) =' (white)
+    show ((1 + 2) * (3 + 4))
     show
 
     show 'Done.'
