@@ -48,4 +48,17 @@ eq [can] :
     show 1 = 1.0
     show
 
+    show '---------- int and str ---'
+    show "is 3 = '3'?" (white)
+    show 3 = '3'
+    show
+
+    show "is '3.0' = 3?" (white)
+    show '3.0' = 3
+    show
+
+    show "is 3 = 'abc'?" (white)
+    show 3 = 'abc'
+    show
+
     show 'Done.'

@@ -49,4 +49,25 @@ math [can] :
     show 7 / 2.0
     show
 
+    show '---------- int and str ---'
+    show "3 ' items' =" (white)
+    show 3 ' items'
+    show
+
+    show "5 + '5' =" (white)
+    show 5 + '5'
+    show
+
+    show "10 - '4' =" (white)
+    show 10 - '4'
+    show
+
+    show "'7.0' / 2 =" (white)
+    show '7.0' / 2
+    show
+
+    show "1 - 'a' = (warns: not a number, so 0)" (white)
+    show 1 - 'a'
+    show
+
     show 'Done.'
